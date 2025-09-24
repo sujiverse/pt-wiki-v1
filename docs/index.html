@@ -1627,6 +1627,7 @@
                 const tick = () => {
                     if (this.physics.enabled && this.graph) {
                         this.applyForces();
+                        this.render();
                     }
                     requestAnimationFrame(tick);
                 };
@@ -1702,15 +1703,13 @@
 
                 // 4. 위치 업데이트 및 감쇠 (드래그 중인 노드 제외)
                 nodes.forEach(node => {
-                    if (node.isDragging) return; // 드래그 중인 노드는 건너뛰기
+                    if (node.isDragging) return;
 
                     node.vx *= this.physics.damping;
                     node.vy *= this.physics.damping;
                     node.x += node.vx;
                     node.y += node.vy;
                 });
-
-                this.render();
             }
 
             worldToScreen(worldX, worldY) {
