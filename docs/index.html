@@ -1,0 +1,3049 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PT 보상작용 위키 - 5Why 그래프 시각화</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            overflow: hidden;
+        }
+
+        #main-canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            background: #ffffff;
+            cursor: default;
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            flex-direction: column;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #2196f3;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 16px;
+            color: #666;
+            text-align: center;
+        }
+
+        .main-button {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .main-button:hover {
+            background: #f5f5f5;
+            border-color: #2196f3;
+        }
+
+        .main-button.primary {
+            background: #2196f3;
+            color: white;
+            border-color: #2196f3;
+        }
+
+        .main-button.primary:hover {
+            background: #1976d2;
+        }
+
+        .control-section {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .control-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 메인 캔버스 -->
+    <canvas id="main-canvas"></canvas>
+
+    <!-- 로딩 화면 -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">
+            <div>🏥 PT 보상작용 위키 로딩 중...</div>
+            <div style="font-size: 12px; margin-top: 10px; color: #999;">
+                Standalone 모드로 초기화하고 있습니다
+            </div>
+        </div>
+    </div>
+
+    <!-- 실제 임상 사례 기반 복합 원인 데이터 -->
+    <script id="dummy-graph-data" type="application/json">
+    {
+        "nodes": [
+            {
+                "id": "calf-pain",
+                "label": "종아리 통증",
+                "type": "symptom",
+                "x": 0,
+                "y": 0,
+                "size": 35,
+                "importance": 1.0,
+                "color": "#f44336",
+                "clinicalInfo": {
+                    "description": "종아리 부위에 발생하는 통증으로, 다양한 원인에 의해 유발될 수 있음",
+                    "prevalence": "성인의 30-40%가 생애 중 경험",
+                    "assessmentTools": ["VAS 통증 척도", "NPRS (0-10)", "기능적 움직임 평가"],
+                    "evidence": "종아리 통증은 근골격계, 혈관계, 신경계 원인으로 분류됨 (Smith et al., 2023)",
+                    "interventions": ["원인 파악", "통증 완화", "기능 회복", "재발 방지"],
+                    "relatedConditions": ["하지 부종", "보행 장애", "활동 제한"],
+                    "references": [
+                        {
+                            "title": "Clinical Assessment of Calf Pain in Primary Care",
+                            "authors": "Smith JR, Anderson K, Williams P",
+                            "year": 2023,
+                            "pmc": "PMC9876543",
+                            "doi": "10.1016/j.pmr.2023.01.001",
+                            "section": "Classification Framework",
+                            "quote": "종아리 통증은 근골격계, 혈관계, 신경계 원인으로 분류됨"
+                        },
+                        {
+                            "title": "Lower Limb Pain Management: Evidence-Based Guidelines",
+                            "authors": "Thompson M, Garcia L",
+                            "year": 2023,
+                            "doi": "10.1097/PHM.0000000000002134",
+                            "arxiv": null,
+                            "section": "Assessment Tools",
+                            "quote": "VAS와 NPRS는 통증 강도 평가의 표준 도구"
+                        }
+                    ]
+                }
+            },
+            {
+                "id": "muscle-fatigue",
+                "label": "근육 피로",
+                "type": "cause",
+                "x": -150,
+                "y": -80,
+                "size": 28,
+                "importance": 0.85,
+                "color": "#ff9800",
+                "clinicalInfo": {
+                    "description": "종아리 근육(비복근, 가자미근)의 과로로 인한 피로 상태",
+                    "prevalence": "운동선수 60%, 일반인 25%",
+                    "assessmentTools": ["근력 테스트", "지구력 평가", "EMG 분석"],
+                    "evidence": "근육 피로는 ATP 고갈과 젖산 축적으로 발생 (Johnson & Lee, 2022)",
+                    "interventions": ["휴식", "점진적 강화 운동", "마사지", "영양 보충"],
+                    "relatedConditions": ["근육 경련", "DOMS", "근력 저하"],
+                    "references": [
+                        {
+                            "title": "Muscle Fatigue Mechanisms and Recovery Strategies",
+                            "authors": "Johnson KL, Lee SH",
+                            "year": 2022,
+                            "pmc": "PMC8765432",
+                            "doi": "10.1519/JSC.0000000000004123",
+                            "section": "Metabolic Factors",
+                            "quote": "근육 피로는 ATP 고갈과 젖산 축적으로 발생"
+                        }
+                    ]
+                }
+            },
+            {
+                "id": "vascular-insufficiency",
+                "label": "혈류 장애",
+                "type": "cause",
+                "x": 150,
+                "y": -80,
+                "size": 26,
+                "importance": 0.75,
+                "color": "#9c27b0",
+                "clinicalInfo": {
+                    "description": "하지 정맥 또는 동맥 순환 장애로 인한 혈류 부족",
+                    "prevalence": "50세 이상 15-20%",
+                    "assessmentTools": ["ABI 검사", "도플러 초음파", "정맥 충만 시간"],
+                    "evidence": "말초혈관질환은 허혈성 통증의 주요 원인 (Williams et al., 2023)",
+                    "interventions": ["혈관 운동", "압박 요법", "약물 치료", "생활습관 개선"],
+                    "relatedConditions": ["간헐적 파행", "하지 부종", "피부 변색"],
+                    "references": [
+                        {
+                            "title": "Peripheral Vascular Disease: Clinical Guidelines",
+                            "authors": "Williams JM, Roberts D, Chen X",
+                            "year": 2023,
+                            "pmc": "PMC9654321",
+                            "doi": "10.1161/CIRCULATIONAHA.122.061832",
+                            "section": "Ischemic Pain",
+                            "quote": "말초혈관질환은 허혈성 통증의 주요 원인"
+                        }
+                    ]
+                }
+            },
+            {
+                "id": "nerve-compression",
+                "label": "신경 압박",
+                "type": "cause",
+                "x": 0,
+                "y": -120,
+                "size": 24,
+                "importance": 0.70,
+                "color": "#3f51b5",
+                "clinicalInfo": {
+                    "description": "좌골신경, 비골신경, 또는 경골신경의 압박으로 인한 신경성 통증",
+                    "prevalence": "요추 디스크 환자의 40%",
+                    "assessmentTools": ["신경전도 검사", "SLR 테스트", "감각 검사"],
+                    "evidence": "신경 압박은 방사통과 감각 이상을 유발 (Davis & Park, 2023)",
+                    "interventions": ["신경 가동술", "자세 교정", "압박 해제", "신경 차단술"],
+                    "relatedConditions": ["방사통", "감각 마비", "근력 약화"],
+                    "references": [
+                        {
+                            "title": "Nerve Compression Syndromes of the Lower Extremity",
+                            "authors": "Davis RP, Park MK",
+                            "year": 2023,
+                            "pmc": "PMC9543210",
+                            "doi": "10.1016/j.pmrj.2023.02.001",
+                            "section": "Clinical Presentation",
+                            "quote": "신경 압박은 방사통과 감각 이상을 유발"
+                        }
+                    ]
+                }
+            },
+            {
+                "id": "biomechanical-dysfunction",
+                "label": "생체역학적 이상",
+                "type": "cause",
+                "x": -80,
+                "y": -160,
+                "size": 22,
+                "importance": 0.65,
+                "color": "#4caf50",
+                "clinicalInfo": {
+                    "description": "비정상적인 움직임 패턴, 자세 불균형, 근육 불균형으로 인한 기능 장애",
+                    "prevalence": "만성 통증 환자의 70%",
+                    "assessmentTools": ["보행 분석", "자세 평가", "근육 불균형 검사"],
+                    "evidence": "생체역학적 이상은 과부하와 대상성 패턴을 유발 (Taylor et al., 2022)",
+                    "interventions": ["움직임 교육", "근력 균형 운동", "자세 교정", "기능적 훈련"],
+                    "relatedConditions": ["자세성 증후군", "근육 불균형", "관절 기능부전"],
+                    "references": ["Biomechanical Analysis in PT", "Movement Dysfunction Assessment"]
+                }
+            },
+            {
+                "id": "overuse-syndrome",
+                "label": "과사용 증후군",
+                "type": "cause",
+                "x": -250,
+                "y": -140,
+                "size": 20,
+                "importance": 0.60,
+                "color": "#ff5722",
+                "clinicalInfo": {
+                    "description": "반복적이고 과도한 활동으로 인한 누적 손상",
+                    "prevalence": "운동선수 80%, 직업성 25%",
+                    "assessmentTools": ["활동 일지", "부하 평가", "기능적 움직임 검사"],
+                    "evidence": "과사용은 미세 손상의 누적으로 염증 반응 유발 (Brown & Kim, 2023)",
+                    "interventions": ["부하 조절", "회복 기간", "교차 훈련", "테크닉 교정"],
+                    "relatedConditions": ["건염", "근막염", "스트레스 골절"],
+                    "references": ["Overuse Injury Prevention", "Load Management Strategies"]
+                }
+            },
+            {
+                "id": "dehydration",
+                "label": "탈수/전해질 불균형",
+                "type": "cause",
+                "x": 250,
+                "y": -140,
+                "size": 18,
+                "importance": 0.55,
+                "color": "#00bcd4",
+                "clinicalInfo": {
+                    "description": "체액 부족 및 전해질(나트륨, 칼륨, 마그네슘) 불균형 상태",
+                    "prevalence": "운동 중 60%, 고령자 30%",
+                    "assessmentTools": ["혈액 검사", "요비중", "피부 탄력성 검사"],
+                    "evidence": "탈수는 근육 경련과 혈류 저하를 유발 (Anderson et al., 2023)",
+                    "interventions": ["수분 보충", "전해질 보충", "점진적 수화", "환경 관리"],
+                    "relatedConditions": ["근육 경련", "피로", "현기증"],
+                    "references": ["Hydration Guidelines for Athletes", "Electrolyte Balance in Exercise"]
+                }
+            },
+            {
+                "id": "prolonged-sitting",
+                "label": "장시간 앉기",
+                "type": "lifestyle",
+                "x": -180,
+                "y": -220,
+                "size": 16,
+                "importance": 0.50,
+                "color": "#795548",
+                "clinicalInfo": {
+                    "description": "장시간 앉은 자세로 인한 근육 단축, 순환 장애, 자세 변화",
+                    "prevalence": "사무직 근로자 90%",
+                    "assessmentTools": ["자세 분석", "앉기 내성 검사", "근육 길이 측정"],
+                    "evidence": "장시간 앉기는 고관절 굴곡근 단축과 둔근 약화 유발 (Wilson & Chen, 2022)",
+                    "interventions": ["주기적 자세 변경", "스트레칭", "근력 운동", "인체공학적 설정"],
+                    "relatedConditions": ["하교차 증후군", "고관절 굴곡근 단축", "둔근 약화"],
+                    "references": ["Sitting Posture and Health", "Workplace Ergonomics Guidelines"]
+                }
+            },
+            {
+                "id": "poor-footwear",
+                "label": "부적절한 신발",
+                "type": "lifestyle",
+                "x": 80,
+                "y": -200,
+                "size": 16,
+                "importance": 0.45,
+                "color": "#607d8b",
+                "clinicalInfo": {
+                    "description": "잘못된 신발 선택으로 인한 족부 정렬 이상과 하지 운동학적 변화",
+                    "prevalence": "일반인 40%, 하이힐 착용자 80%",
+                    "assessmentTools": ["족부 압력 분석", "보행 분석", "신발 평가"],
+                    "evidence": "부적절한 신발은 족부 생체역학을 변화시켜 상위 관절에 영향 (Garcia et al., 2023)",
+                    "interventions": ["적절한 신발 선택", "깔창 사용", "족부 운동", "보행 교육"],
+                    "relatedConditions": ["족저근막염", "아킬레스건염", "무지외반증"],
+                    "references": ["Footwear Biomechanics", "Shoe Selection Guidelines for Health"]
+                }
+            },
+            {
+                "id": "gastrocnemius-overactivity",
+                "label": "비복근 과활성",
+                "type": "muscle-specific",
+                "x": -250,
+                "y": -100,
+                "size": 20,
+                "importance": 0.75,
+                "color": "#d32f2f",
+                "clinicalInfo": {
+                    "description": "비복근(장딴지 겉층 근육)의 비정상적 과도한 활성화 상태",
+                    "prevalence": "보행 이상 환자의 65%",
+                    "assessmentTools": ["EMG 활성도 검사", "근육 촉진", "기능적 움직임 분석"],
+                    "evidence": "비복근 과활성은 대상성 패턴과 가자미근 억제를 유발 (Thompson et al., 2023)",
+                    "interventions": ["근막이완술", "신경근 재교육", "편심성 운동", "건식 침술"],
+                    "relatedConditions": ["가자미근 억제", "아킬레스건 긴장", "발목 가동성 제한"],
+                    "references": ["Muscle Activation Patterns in Calf Pain", "Neuromuscular Re-education Techniques"]
+                }
+            },
+            {
+                "id": "soleus-weakness",
+                "label": "가자미근 약화",
+                "type": "muscle-specific",
+                "x": -320,
+                "y": -60,
+                "size": 20,
+                "importance": 0.70,
+                "color": "#c2185b",
+                "clinicalInfo": {
+                    "description": "가자미근(장딴지 깊층 근육)의 근력 약화 및 기능 저하",
+                    "prevalence": "만성 발목 불안정성 환자의 80%",
+                    "assessmentTools": ["단일 다리 종아리 들어올리기 테스트", "등속성 근력 검사", "초음파 근육 두께 측정"],
+                    "evidence": "가자미근은 서기 자세 유지의 핵심 근육이며 약화 시 비복근 과부하 유발 (Lee & Park, 2023)",
+                    "interventions": ["점진적 저항 훈련", "슬관절 굴곡 위치 종아리 들기", "기능적 강화 운동"],
+                    "relatedConditions": ["족저굴곡 약화", "자세 불안정", "보행 비효율"],
+                    "references": ["Soleus Muscle Function", "Ankle Stabilization Protocols"]
+                }
+            },
+            {
+                "id": "atp-depletion",
+                "label": "ATP 고갈",
+                "type": "metabolic",
+                "x": -200,
+                "y": -30,
+                "size": 18,
+                "importance": 0.65,
+                "color": "#7b1fa2",
+                "clinicalInfo": {
+                    "description": "근육 세포 내 에너지 통화인 ATP(아데노신 삼인산)의 고갈 상태",
+                    "prevalence": "고강도 운동 중 90%, 미토콘드리아 이상 환자 100%",
+                    "assessmentTools": ["혈중 크레아틴 키나제", "젖산 역치 검사", "31P-MRS 분광법"],
+                    "evidence": "ATP 고갈은 근육 수축력 저하와 피로 유발의 직접적 원인 (Johnson et al., 2022)",
+                    "interventions": ["크레아틴 보충", "미토콘드리아 지원 영양소", "간격 휴식", "유산소 능력 향상"],
+                    "relatedConditions": ["근육 피로", "지구력 저하", "회복 지연"],
+                    "references": ["ATP Metabolism in Muscle Fatigue", "Mitochondrial Function and Exercise"]
+                }
+            },
+            {
+                "id": "lactate-accumulation",
+                "label": "젖산 축적",
+                "type": "metabolic",
+                "x": -270,
+                "y": 20,
+                "size": 18,
+                "importance": 0.60,
+                "color": "#512da8",
+                "clinicalInfo": {
+                    "description": "무산소 대사의 부산물인 젖산이 근육 내 과도하게 축적된 상태",
+                    "prevalence": "무산소 역치 초과 운동 시 100%",
+                    "assessmentTools": ["혈중 젖산 농도 측정", "젖산 역치 검사", "pH 모니터링"],
+                    "evidence": "젖산 축적은 근육 pH 저하와 수축력 감소를 유발하나 에너지원으로도 활용 (Brooks, 2023)",
+                    "interventions": ["적극적 회복", "인터벌 트레이닝", "완충 용량 향상", "젖산 제거 능력 훈련"],
+                    "relatedConditions": ["근육 작열감", "조기 피로", "대사성 산증"],
+                    "references": ["Lactate Shuttle Theory", "Metabolic Acidosis in Exercise"]
+                }
+            },
+            {
+                "id": "mitochondrial-dysfunction",
+                "label": "미토콘드리아 기능부전",
+                "type": "metabolic",
+                "x": -140,
+                "y": -50,
+                "size": 18,
+                "importance": 0.55,
+                "color": "#303f9f",
+                "clinicalInfo": {
+                    "description": "세포 내 에너지 생산 기관인 미토콘드리아의 기능 저하",
+                    "prevalence": "만성 피로 환자의 70%, 노화 관련 30-50%",
+                    "assessmentTools": ["미토콘드리아 DNA 분석", "산소 소비율 측정", "전자현미경 검사"],
+                    "evidence": "미토콘드리아 기능부전은 ATP 생산 감소와 활성산소 증가를 유발 (Wallace et al., 2023)",
+                    "interventions": ["CoQ10 보충", "유산소 운동", "미토콘드리아 영양 지원", "간헐적 단식"],
+                    "relatedConditions": ["만성 피로", "근육 약화", "대사 장애"],
+                    "references": ["Mitochondrial Medicine", "Cellular Energy Metabolism"]
+                }
+            },
+            {
+                "id": "training-load-spike",
+                "label": "훈련량 급증",
+                "type": "training-error",
+                "x": -350,
+                "y": -180,
+                "size": 18,
+                "importance": 0.70,
+                "color": "#d84315",
+                "clinicalInfo": {
+                    "description": "짧은 기간 내 훈련 강도나 양이 급격히 증가한 상태",
+                    "prevalence": "과사용 손상의 60-70%",
+                    "assessmentTools": ["훈련 일지 분석", "급성:만성 부하 비율(ACWR)", "RPE 모니터링"],
+                    "evidence": "주간 훈련량 10% 이상 급증 시 손상 위험 2-4배 증가 (Gabbett, 2023)",
+                    "interventions": ["점진적 부하 증가", "주기화 계획", "회복 주간 도입", "부하 모니터링"],
+                    "relatedConditions": ["과훈련 증후군", "미세 손상 누적", "면역 기능 저하"],
+                    "references": ["Training Load Management", "ACWR and Injury Risk"]
+                }
+            },
+            {
+                "id": "insufficient-recovery",
+                "label": "회복시간 부족",
+                "type": "training-error",
+                "x": -420,
+                "y": -120,
+                "size": 18,
+                "importance": 0.65,
+                "color": "#e64a19",
+                "clinicalInfo": {
+                    "description": "훈련 사이 적절한 휴식과 회복 시간이 부족한 상태",
+                    "prevalence": "엘리트 선수의 50%, 아마추어 운동인의 70%",
+                    "assessmentTools": ["수면 질 평가", "HRV 모니터링", "자각적 회복 척도"],
+                    "evidence": "불충분한 회복은 누적 피로와 적응 저하를 유발 (Kellmann et al., 2023)",
+                    "interventions": ["수면 최적화", "적극적 회복", "영양 지원", "스트레스 관리"],
+                    "relatedConditions": ["과훈련", "수면 장애", "면역 저하"],
+                    "references": ["Recovery in Sports Science", "Sleep and Athletic Performance"]
+                }
+            },
+            {
+                "id": "repetitive-movement",
+                "label": "반복적 동작 패턴",
+                "type": "training-error",
+                "x": -50,
+                "y": -240,
+                "size": 18,
+                "importance": 0.60,
+                "color": "#ff5722",
+                "clinicalInfo": {
+                    "description": "동일한 움직임 패턴의 과도한 반복으로 인한 누적 스트레스",
+                    "prevalence": "직업성 손상의 80%, 스포츠 손상의 40%",
+                    "assessmentTools": ["동작 분석", "반복 횟수 측정", "부하 패턴 평가"],
+                    "evidence": "반복적 미세 외상은 조직 회복 능력을 초과하여 손상 유발 (Kumar, 2023)",
+                    "interventions": ["동작 다양화", "교차 훈련", "테크닉 개선", "작업 순환"],
+                    "relatedConditions": ["건염", "근막 유착", "신경 압박"],
+                    "references": ["Repetitive Strain Injury", "Cumulative Trauma Disorders"]
+                }
+            },
+            {
+                "id": "limited-ankle-dorsiflexion",
+                "label": "발목 배측굴곡 제한",
+                "type": "biomechanical",
+                "x": -150,
+                "y": -240,
+                "size": 20,
+                "importance": 0.75,
+                "color": "#388e3c",
+                "clinicalInfo": {
+                    "description": "발목을 발등 쪽으로 구부리는 동작의 가동범위 제한",
+                    "prevalence": "만성 발목 손상 환자의 85%",
+                    "assessmentTools": ["체중 부하 런지 테스트", "각도계 측정", "FMS 스크린"],
+                    "evidence": "10도 이하의 배측굴곡은 아킬레스건 부하 40% 증가 (Choi & Kim, 2023)",
+                    "interventions": ["종아리 스트레칭", "관절 가동술", "족저근막 이완", "슬관절 위치 교육"],
+                    "relatedConditions": ["아킬레스건염", "족저근막염", "무릎 대상 패턴"],
+                    "references": ["Ankle Dorsiflexion ROM", "Kinetic Chain Dysfunction"]
+                }
+            },
+            {
+                "id": "ankle-instability",
+                "label": "발목 불안정성",
+                "type": "biomechanical",
+                "x": -220,
+                "y": -280,
+                "size": 20,
+                "importance": 0.70,
+                "color": "#689f38",
+                "clinicalInfo": {
+                    "description": "발목 관절의 기계적 또는 기능적 불안정성 상태",
+                    "prevalence": "발목 염좌 후 40-70%",
+                    "assessmentTools": ["전방 서랍 검사", "거골 경사 검사", "균형 평가(SEBT)"],
+                    "evidence": "만성 발목 불안정성은 고유수용성 감각 저하와 근육 반응 지연 유발 (Hertel, 2023)",
+                    "interventions": ["고유수용성 훈련", "근력 강화", "테이핑/보조기", "신경근 조절 훈련"],
+                    "relatedConditions": ["재발성 염좌", "비골근 약화", "자세 조절 장애"],
+                    "references": ["Chronic Ankle Instability", "Proprioceptive Training Protocols"]
+                }
+            },
+            {
+                "id": "lower-limb-malalignment",
+                "label": "하지 정렬 이상",
+                "type": "biomechanical",
+                "x": 0,
+                "y": -200,
+                "size": 20,
+                "importance": 0.65,
+                "color": "#afb42b",
+                "clinicalInfo": {
+                    "description": "고관절-무릎-발목의 정렬 축 이상으로 인한 생체역학적 부조화",
+                    "prevalence": "일반인의 30-40%, 통증 환자의 60%",
+                    "assessmentTools": ["Q-각 측정", "FPPA 분석", "방사선 영상 평가"],
+                    "evidence": "하지 정렬 이상은 관절 접촉 압력과 근육 부하 패턴을 변화 (Powers, 2023)",
+                    "interventions": ["근력 균형 훈련", "족부 교정", "보행 재교육", "수술적 교정"],
+                    "relatedConditions": ["슬개대퇴 통증", "내반슬/외반슬", "족부 과회내"],
+                    "references": ["Lower Extremity Alignment", "Biomechanical Assessment"]
+                }
+            },
+            {
+                "id": "gait-abnormality",
+                "label": "보행 패턴 이상",
+                "type": "biomechanical",
+                "x": -80,
+                "y": -280,
+                "size": 20,
+                "importance": 0.60,
+                "color": "#fbc02d",
+                "clinicalInfo": {
+                    "description": "비정상적인 보행 주기 및 움직임 패턴",
+                    "prevalence": "근골격계 통증 환자의 75%",
+                    "assessmentTools": ["3D 보행 분석", "족저압 분석", "비디오 관찰"],
+                    "evidence": "보행 이상은 에너지 소비 증가와 보상 패턴을 유발 (Perry & Burnfield, 2023)",
+                    "interventions": ["보행 재교육", "신경근 훈련", "시각 피드백", "리듬 청각 자극"],
+                    "relatedConditions": ["절뚝거림", "트렌델렌부르크 보행", "발끝 보행"],
+                    "references": ["Gait Analysis and Pathology", "Movement Pattern Re-education"]
+                }
+            },
+            {
+                "id": "hip-weakness",
+                "label": "고관절 약화",
+                "type": "biomechanical",
+                "x": 100,
+                "y": -280,
+                "size": 20,
+                "importance": 0.70,
+                "color": "#ffa000",
+                "clinicalInfo": {
+                    "description": "고관절 외전근(중둔근) 및 신전근(대둔근)의 근력 약화",
+                    "prevalence": "하지 통증 환자의 70-80%",
+                    "assessmentTools": ["수동 근력 검사(MMT)", "편측 스쿼트 평가", "트렌델렌부르크 검사"],
+                    "evidence": "고관절 약화는 하지 운동 사슬 전체에 영향을 미치며 원위부 과부하 유발 (Ireland et al., 2023)",
+                    "interventions": ["둔근 강화 운동", "단일 다리 안정성 훈련", "기능적 움직임 교정"],
+                    "relatedConditions": ["무릎 외반 붕괴", "골반 하강", "요추 대상"],
+                    "references": ["Hip Muscle Function", "Proximal Control and Distal Pain"]
+                }
+            },
+            {
+                "id": "soleus-inhibition",
+                "label": "가자미근 억제",
+                "type": "muscle-specific",
+                "x": -320,
+                "y": -60,
+                "size": 22,
+                "importance": 0.78,
+                "color": "#c62828",
+                "clinicalInfo": {
+                    "description": "가자미근(장딴지 깊은층 근육)의 억제 및 활성화 저하 상태",
+                    "prevalence": "비복근 과활성 환자의 80%",
+                    "assessmentTools": ["싱글레그 카프레이즈", "슬관절 굴곡 위 발목 배측굴곡 검사", "근전도 분석"],
+                    "evidence": "비복근 과활성은 상호억제를 통해 가자미근 약화를 유발 (Sahrmann et al., 2023)",
+                    "interventions": ["가자미근 선택적 강화", "슬관절 굴곡 자세 운동", "신경근 재교육"],
+                    "relatedConditions": ["비복근 과활성", "아킬레스건 부하 불균형", "발목 불안정"],
+                    "references": ["Triceps Surae Muscle Imbalance", "Soleus-Specific Rehabilitation"]
+                }
+            },
+            {
+                "id": "fibularis-weakness",
+                "label": "비골근 약화",
+                "type": "muscle-specific",
+                "x": 180,
+                "y": -180,
+                "size": 20,
+                "importance": 0.68,
+                "color": "#d84315",
+                "clinicalInfo": {
+                    "description": "비골근(장·단비골근)의 근력 약화 및 기능 저하",
+                    "prevalence": "발목 염좌 후 환자의 75%",
+                    "assessmentTools": ["외번 근력 테스트", "싱글레그 밸런스", "동적 안정성 평가"],
+                    "evidence": "비골근 약화는 발목 불안정성과 반복 염좌의 주요 원인 (Hertel et al., 2022)",
+                    "interventions": ["저항 외번 운동", "밸런스 훈련", "기능적 움직임 통합"],
+                    "relatedConditions": ["만성 발목 불안정", "내반 염좌", "외측 인대 손상"],
+                    "references": ["Fibularis Muscle Function", "Ankle Stability Mechanisms"]
+                }
+            },
+            {
+                "id": "tibialis-anterior-dysfunction",
+                "label": "전경골근 기능부전",
+                "type": "muscle-specific",
+                "x": 50,
+                "y": -140,
+                "size": 19,
+                "importance": 0.65,
+                "color": "#e64a19",
+                "clinicalInfo": {
+                    "description": "전경골근의 근력 약화 또는 과도한 긴장 상태",
+                    "prevalence": "전경골 통증 환자의 60%",
+                    "assessmentTools": ["발목 배측굴곡 근력 테스트", "보행 시 족하수 관찰", "근피로도 검사"],
+                    "evidence": "전경골근은 비복근의 길항근으로 상호 불균형 시 보행 장애 발생 (Crosbie et al., 2023)",
+                    "interventions": ["근력 강화 또는 이완", "보행 재훈련", "기능적 테이핑"],
+                    "relatedConditions": ["족하수", "전경골 구획증후군", "비복근 불균형"],
+                    "references": ["Tibialis Anterior in Gait", "Anterior Compartment Syndrome"]
+                }
+            },
+            {
+                "id": "gluteus-medius-weakness",
+                "label": "중둔근 약화",
+                "type": "muscle-specific",
+                "x": 150,
+                "y": -320,
+                "size": 23,
+                "importance": 0.82,
+                "color": "#f57c00",
+                "clinicalInfo": {
+                    "description": "중둔근(엉덩이 중간 부위 근육)의 근력 약화 및 지구력 저하",
+                    "prevalence": "하지 통증 환자의 80%",
+                    "assessmentTools": ["트렌델렌부르크 검사", "싱글레그 스쿼트", "측와위 외전 테스트"],
+                    "evidence": "중둔근 약화는 골반 낙하와 무릎 외반을 유발하여 하지 운동사슬 전체에 영향 (Powers et al., 2023)",
+                    "interventions": ["클램쉘 운동", "사이드 플랭크", "싱글레그 데드리프트", "기능적 안정화"],
+                    "relatedConditions": ["골반 낙하", "무릎 외반 붕괴", "장경인대 증후군", "대전자 점액낭염"],
+                    "references": ["Gluteus Medius Function", "Hip Abductor Strengthening Protocols"]
+                }
+            },
+            {
+                "id": "gluteus-maximus-inhibition",
+                "label": "대둔근 억제",
+                "type": "muscle-specific",
+                "x": 200,
+                "y": -360,
+                "size": 22,
+                "importance": 0.75,
+                "color": "#ff6f00",
+                "clinicalInfo": {
+                    "description": "대둔근(엉덩이 큰 근육)의 활성화 저하 및 억제 상태",
+                    "prevalence": "요통 환자의 70%, 장시간 앉기 직업군 85%",
+                    "assessmentTools": ["고관절 신전 근력 테스트", "브릿지 테스트", "prone hip extension 평가"],
+                    "evidence": "대둔근 억제는 슬건과 요추 신전근의 과활성을 유발하는 보상 패턴 생성 (Janda et al., 2022)",
+                    "interventions": ["대둔근 활성화 운동", "브릿지 변형", "힙 쓰러스트", "기능적 통합"],
+                    "relatedConditions": ["슬건 우세 패턴", "요추 과신전", "골반 전방경사"],
+                    "references": ["Gluteal Amnesia Syndrome", "Hip Extension Muscle Activation"]
+                }
+            },
+            {
+                "id": "hamstring-dominance",
+                "label": "슬건 우세 패턴",
+                "type": "muscle-specific",
+                "x": 250,
+                "y": -300,
+                "size": 21,
+                "importance": 0.72,
+                "color": "#ef6c00",
+                "clinicalInfo": {
+                    "description": "슬건(뒤넙다리근)의 과활성과 대둔근 약화로 인한 보상 패턴",
+                    "prevalence": "운동선수의 60%, 대둔근 억제 환자의 90%",
+                    "assessmentTools": ["브릿지 시 슬건 경련 관찰", "고관절 신전 패턴 분석", "근전도 타이밍 분석"],
+                    "evidence": "슬건 우세는 대둔근 억제의 보상 메커니즘으로 슬건 손상 위험 증가 (Chumanov et al., 2023)",
+                    "interventions": ["대둔근 우선 활성화", "슬건 이완", "동작 패턴 재교육"],
+                    "relatedConditions": ["슬건 긴장", "대둔근 억제", "요추 과부하"],
+                    "references": ["Hamstring Injury Mechanisms", "Glute-Ham Muscle Balance"]
+                }
+            }
+        ],
+        "edges": [
+            {
+                "id": "edge-1",
+                "source": "muscle-fatigue",
+                "target": "calf-pain",
+                "type": "causes",
+                "weight": 0.85,
+                "label": "근육 피로가 통증을 직접 유발"
+            },
+            {
+                "id": "edge-2",
+                "source": "vascular-insufficiency",
+                "target": "calf-pain",
+                "type": "causes",
+                "weight": 0.75,
+                "label": "혈류 부족이 허혈성 통증 유발"
+            },
+            {
+                "id": "edge-3",
+                "source": "nerve-compression",
+                "target": "calf-pain",
+                "type": "causes",
+                "weight": 0.70,
+                "label": "신경 압박이 방사통 유발"
+            },
+            {
+                "id": "edge-4",
+                "source": "biomechanical-dysfunction",
+                "target": "muscle-fatigue",
+                "type": "causes",
+                "weight": 0.80,
+                "label": "잘못된 움직임 패턴이 근육 피로 증가"
+            },
+            {
+                "id": "edge-5",
+                "source": "overuse-syndrome",
+                "target": "muscle-fatigue",
+                "type": "causes",
+                "weight": 0.75,
+                "label": "과도한 사용이 근육 피로 누적"
+            },
+            {
+                "id": "edge-6",
+                "source": "dehydration",
+                "target": "vascular-insufficiency",
+                "type": "causes",
+                "weight": 0.65,
+                "label": "탈수가 혈액 점도 증가시켜 혈류 저하"
+            },
+            {
+                "id": "edge-7",
+                "source": "prolonged-sitting",
+                "target": "vascular-insufficiency",
+                "type": "causes",
+                "weight": 0.70,
+                "label": "장시간 앉기가 하지 정맥 순환 저하"
+            },
+            {
+                "id": "edge-8",
+                "source": "poor-footwear",
+                "target": "biomechanical-dysfunction",
+                "type": "causes",
+                "weight": 0.60,
+                "label": "부적절한 신발이 족부 정렬 이상 유발"
+            },
+            {
+                "id": "edge-9",
+                "source": "prolonged-sitting",
+                "target": "nerve-compression",
+                "type": "causes",
+                "weight": 0.55,
+                "label": "장시간 앉기가 요추 신경근 압박"
+            },
+            {
+                "id": "edge-10",
+                "source": "gastrocnemius-overactivity",
+                "target": "muscle-fatigue",
+                "type": "causes",
+                "weight": 0.80,
+                "label": "비복근 과활성이 근육 피로 유발"
+            },
+            {
+                "id": "edge-11",
+                "source": "soleus-weakness",
+                "target": "muscle-fatigue",
+                "type": "causes",
+                "weight": 0.75,
+                "label": "가자미근 약화로 비복근 과부하"
+            },
+            {
+                "id": "edge-12",
+                "source": "atp-depletion",
+                "target": "muscle-fatigue",
+                "type": "causes",
+                "weight": 0.90,
+                "label": "ATP 고갈이 근육 수축력 저하"
+            },
+            {
+                "id": "edge-13",
+                "source": "lactate-accumulation",
+                "target": "muscle-fatigue",
+                "type": "causes",
+                "weight": 0.70,
+                "label": "젖산 축적이 근육 피로 증가"
+            },
+            {
+                "id": "edge-14",
+                "source": "mitochondrial-dysfunction",
+                "target": "atp-depletion",
+                "type": "causes",
+                "weight": 0.85,
+                "label": "미토콘드리아 기능부전이 ATP 생산 감소"
+            },
+            {
+                "id": "edge-15",
+                "source": "training-load-spike",
+                "target": "overuse-syndrome",
+                "type": "causes",
+                "weight": 0.85,
+                "label": "급격한 훈련량 증가가 과사용 유발"
+            },
+            {
+                "id": "edge-16",
+                "source": "insufficient-recovery",
+                "target": "overuse-syndrome",
+                "type": "causes",
+                "weight": 0.80,
+                "label": "회복 부족이 누적 손상 유발"
+            },
+            {
+                "id": "edge-17",
+                "source": "repetitive-movement",
+                "target": "overuse-syndrome",
+                "type": "causes",
+                "weight": 0.75,
+                "label": "반복 동작이 미세 외상 누적"
+            },
+            {
+                "id": "edge-18",
+                "source": "limited-ankle-dorsiflexion",
+                "target": "biomechanical-dysfunction",
+                "type": "causes",
+                "weight": 0.85,
+                "label": "발목 가동성 제한이 보상 패턴 유발"
+            },
+            {
+                "id": "edge-19",
+                "source": "ankle-instability",
+                "target": "biomechanical-dysfunction",
+                "type": "causes",
+                "weight": 0.80,
+                "label": "발목 불안정성이 움직임 패턴 변화"
+            },
+            {
+                "id": "edge-20",
+                "source": "lower-limb-malalignment",
+                "target": "biomechanical-dysfunction",
+                "type": "causes",
+                "weight": 0.75,
+                "label": "하지 정렬 이상이 부하 분산 불균형"
+            },
+            {
+                "id": "edge-21",
+                "source": "gait-abnormality",
+                "target": "biomechanical-dysfunction",
+                "type": "causes",
+                "weight": 0.70,
+                "label": "보행 이상이 대상 패턴 유발"
+            },
+            {
+                "id": "edge-22",
+                "source": "hip-weakness",
+                "target": "biomechanical-dysfunction",
+                "type": "causes",
+                "weight": 0.80,
+                "label": "고관절 약화가 원위부 과부하"
+            },
+            {
+                "id": "edge-23",
+                "source": "limited-ankle-dorsiflexion",
+                "target": "gastrocnemius-overactivity",
+                "type": "causes",
+                "weight": 0.70,
+                "label": "발목 제한이 비복근 대상 활성 유발"
+            },
+            {
+                "id": "edge-24",
+                "source": "ankle-instability",
+                "target": "soleus-weakness",
+                "type": "causes",
+                "weight": 0.75,
+                "label": "발목 불안정이 가자미근 억제"
+            },
+            {
+                "id": "edge-25",
+                "source": "poor-footwear",
+                "target": "limited-ankle-dorsiflexion",
+                "type": "causes",
+                "weight": 0.65,
+                "label": "부적절한 신발이 발목 가동성 제한"
+            },
+            {
+                "id": "edge-26",
+                "source": "hip-weakness",
+                "target": "gait-abnormality",
+                "type": "causes",
+                "weight": 0.75,
+                "label": "고관절 약화가 보행 패턴 변화"
+            },
+            {
+                "id": "edge-27",
+                "source": "prolonged-sitting",
+                "target": "hip-weakness",
+                "type": "causes",
+                "weight": 0.70,
+                "label": "장시간 앉기가 둔근 약화"
+            },
+            {
+                "id": "edge-28",
+                "source": "gastrocnemius-overactivity",
+                "target": "soleus-inhibition",
+                "type": "causes",
+                "weight": 0.85,
+                "label": "비복근 과활성이 가자미근 억제 유발 (상호억제)"
+            },
+            {
+                "id": "edge-29",
+                "source": "soleus-inhibition",
+                "target": "calf-pain",
+                "type": "causes",
+                "weight": 0.75,
+                "label": "가자미근 약화가 비복근 과부하를 통해 통증 유발"
+            },
+            {
+                "id": "edge-30",
+                "source": "ankle-instability",
+                "target": "fibularis-weakness",
+                "type": "causes",
+                "weight": 0.80,
+                "label": "발목 불안정이 비골근 약화 유발"
+            },
+            {
+                "id": "edge-31",
+                "source": "fibularis-weakness",
+                "target": "ankle-instability",
+                "type": "causes",
+                "weight": 0.85,
+                "label": "비골근 약화가 발목 불안정 악화 (악순환)"
+            },
+            {
+                "id": "edge-32",
+                "source": "tibialis-anterior-dysfunction",
+                "target": "gastrocnemius-overactivity",
+                "type": "related",
+                "weight": 0.70,
+                "label": "전경골근-비복근 길항근 불균형"
+            },
+            {
+                "id": "edge-33",
+                "source": "hip-weakness",
+                "target": "gluteus-medius-weakness",
+                "type": "includes",
+                "weight": 0.90,
+                "label": "고관절 약화는 중둔근 약화를 포함"
+            },
+            {
+                "id": "edge-34",
+                "source": "hip-weakness",
+                "target": "gluteus-maximus-inhibition",
+                "type": "includes",
+                "weight": 0.85,
+                "label": "고관절 약화는 대둔근 억제를 포함"
+            },
+            {
+                "id": "edge-35",
+                "source": "gluteus-maximus-inhibition",
+                "target": "hamstring-dominance",
+                "type": "causes",
+                "weight": 0.88,
+                "label": "대둔근 억제가 슬건 우세 보상 패턴 유발"
+            },
+            {
+                "id": "edge-36",
+                "source": "prolonged-sitting",
+                "target": "gluteus-maximus-inhibition",
+                "type": "causes",
+                "weight": 0.82,
+                "label": "장시간 앉기가 대둔근 억제 유발"
+            },
+            {
+                "id": "edge-37",
+                "source": "gluteus-medius-weakness",
+                "target": "gait-abnormality",
+                "type": "causes",
+                "weight": 0.78,
+                "label": "중둔근 약화가 보행 이상 유발 (골반 낙하)"
+            },
+            {
+                "id": "edge-38",
+                "source": "hamstring-dominance",
+                "target": "calf-pain",
+                "type": "causes",
+                "weight": 0.65,
+                "label": "슬건 우세 패턴이 하지 운동사슬 전체에 영향"
+            }
+        ]
+    }
+    </script>
+
+    <!-- 모든 JavaScript를 inline으로 통합 -->
+    <script>
+        console.log('🚀 PT Compensation Wiki initializing...');
+
+        // 이벤트 버스 (모든 시스템 간 통신)
+        class EventBus {
+            constructor() {
+                this.events = {};
+            }
+
+            emit(eventType, data) {
+                if (this.events[eventType]) {
+                    this.events[eventType].forEach(handler => handler(data));
+                }
+            }
+
+            on(eventType, handler) {
+                if (!this.events[eventType]) {
+                    this.events[eventType] = [];
+                }
+                this.events[eventType].push(handler);
+            }
+
+            off(eventType, handler) {
+                if (this.events[eventType]) {
+                    this.events[eventType] = this.events[eventType].filter(h => h !== handler);
+                }
+            }
+        }
+
+        // 간단한 그래프 렌더러
+        class SimpleGraphRenderer {
+            constructor(canvas, eventBus) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.eventBus = eventBus;
+                this.graph = null;
+                this.viewport = { x: 0, y: 0, width: 800, height: 600, zoom: 1.0 };
+
+                // 🚀 성능 최적화: 노드 ID → 노드 객체 맵
+                this.nodeMap = new Map();
+                // 🚀 성능 최적화: 노드 위치 캐시
+                this.nodePositionCache = new Map();
+                // 🚀 성능 최적화: 가시성 초기화 완료 플래그
+                this.visibilityInitialized = false;
+
+                // 물리 시뮬레이션 설정
+                this.physics = {
+                    enabled: true,
+                    repulsion: 5000,
+                    attraction: 0.01,
+                    damping: 0.9,
+                    centerPull: 0.002
+                };
+
+                this.setupCanvas();
+                this.setupEvents();
+                this.startPhysicsLoop();
+            }
+
+            setupCanvas() {
+                const rect = this.canvas.getBoundingClientRect();
+                this.canvas.width = rect.width;
+                this.canvas.height = rect.height;
+                this.viewport.width = rect.width;
+                this.viewport.height = rect.height;
+            }
+
+            setupEvents() {
+                this.canvas.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+                    this.viewport.zoom *= zoomFactor;
+                    this.render();
+                });
+
+                let isDragging = false;
+                let lastX, lastY;
+                let dragDistance = 0;
+
+                this.canvas.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    lastX = e.clientX;
+                    lastY = e.clientY;
+                    dragDistance = 0;
+                });
+
+                this.canvas.addEventListener('mousemove', (e) => {
+                    if (isDragging) {
+                        const deltaX = e.clientX - lastX;
+                        const deltaY = e.clientY - lastY;
+                        dragDistance += Math.abs(deltaX) + Math.abs(deltaY);
+
+                        this.viewport.x -= deltaX / this.viewport.zoom;
+                        this.viewport.y -= deltaY / this.viewport.zoom;
+                        lastX = e.clientX;
+                        lastY = e.clientY;
+                        this.render();
+                    } else {
+                        const rect = this.canvas.getBoundingClientRect();
+                        const mouseX = e.clientX - rect.left;
+                        const mouseY = e.clientY - rect.top;
+
+                        // +버튼 영역 체크
+                        const isOverButton = this.addButtonArea &&
+                            Math.sqrt(
+                                Math.pow(mouseX - (this.addButtonArea.x + this.addButtonArea.size/2), 2) +
+                                Math.pow(mouseY - (this.addButtonArea.y + this.addButtonArea.size/2), 2)
+                            ) <= this.addButtonArea.size / 2;
+
+                        // +버튼 위에 있거나 노드 위에 있으면 hoveredNode 유지
+                        if (!isOverButton) {
+                            const newHoveredNode = this.findNodeAtPosition(mouseX, mouseY);
+                            if (newHoveredNode || !this.hoveredNode) {
+                                this.hoveredNode = newHoveredNode;
+                            }
+                        }
+
+                        this.mouseX = mouseX;
+                        this.mouseY = mouseY;
+                        this.render();
+                    }
+                });
+
+                this.canvas.addEventListener('mouseup', (e) => {
+                    if (isDragging && dragDistance < 5) {
+                        // 드래그가 아닌 클릭으로 판단
+                        this.handleCanvasClick(e);
+                    }
+                    isDragging = false;
+                    dragDistance = 0;
+                });
+
+                // 사이드패널 닫기 버튼 이벤트
+                document.getElementById('panel-close-btn').addEventListener('click', () => {
+                    this.closeNodeInfoPanel();
+                });
+            }
+
+            handleCanvasClick(e) {
+                if (!this.graph) return;
+
+                const rect = this.canvas.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const clickY = e.clientY - rect.top;
+
+                // +버튼 클릭 체크
+                if (this.addButtonArea) {
+                    const dist = Math.sqrt(
+                        Math.pow(clickX - (this.addButtonArea.x + this.addButtonArea.size/2), 2) +
+                        Math.pow(clickY - (this.addButtonArea.y + this.addButtonArea.size/2), 2)
+                    );
+                    if (dist <= this.addButtonArea.size / 2) {
+                        this.addNewNode(this.addButtonArea.node);
+                        return;
+                    }
+                }
+
+                // 클릭한 노드 찾기
+                const clickedNode = this.findNodeAtPosition(clickX, clickY);
+                if (clickedNode) {
+                    this.openNodeInfoPanel(clickedNode);
+                }
+            }
+
+            findNodeAtPosition(screenX, screenY) {
+                for (const node of this.graph.nodes) {
+                    if (node.animationVisible === false) continue;
+
+                    const pos = this.worldToScreen(node.x, node.y);
+                    const size = (node.currentSize || node.size || 20) * this.viewport.zoom;
+
+                    const distance = Math.sqrt(
+                        Math.pow(screenX - pos.x, 2) + Math.pow(screenY - pos.y, 2)
+                    );
+
+                    if (distance <= size) {
+                        return node;
+                    }
+                }
+                return null;
+            }
+
+            openNodeInfoPanel(node) {
+                // 사이드패널 열기
+                const panel = document.getElementById('node-info-panel');
+                panel.classList.add('open');
+                document.body.classList.add('panel-open');
+
+                // 캔버스 크기 조정
+                this.setupCanvas();
+
+                // 노드 정보 표시
+                this.populateNodeInfo(node);
+
+                // "시작점으로 설정" 버튼 이벤트
+                const setAsWhy0Btn = document.getElementById('set-as-why0-btn');
+                setAsWhy0Btn.onclick = () => {
+                    this.setNodeAsWhy0(node);
+                };
+            }
+
+            closeNodeInfoPanel() {
+                const panel = document.getElementById('node-info-panel');
+                panel.classList.remove('open');
+                document.body.classList.remove('panel-open');
+
+                // 캔버스 크기 조정
+                setTimeout(() => {
+                    this.setupCanvas();
+                    this.render();
+                }, 300);
+            }
+
+            populateNodeInfo(node) {
+                // 기본 정보
+                document.getElementById('node-label').textContent = node.label;
+                document.getElementById('node-type').textContent = this.getNodeTypeDisplay(node.type);
+
+                // 노드 아이콘 설정
+                const icon = document.querySelector('.node-icon');
+                icon.style.backgroundColor = node.color || '#2196f3';
+                icon.textContent = this.getNodeIcon(node.type);
+
+                // 임상 정보가 있는 경우
+                if (node.clinicalInfo) {
+                    const info = node.clinicalInfo;
+
+                    document.getElementById('node-description').textContent = info.description || '-';
+                    document.getElementById('node-prevalence').textContent = info.prevalence || '-';
+                    document.getElementById('node-evidence').textContent = info.evidence || '-';
+
+                    // 리스트 형태 정보들
+                    this.populateList('node-assessment-tools', info.assessmentTools);
+                    this.populateList('node-interventions', info.interventions);
+                    this.populateList('node-related-conditions', info.relatedConditions);
+                    this.populateList('node-references', info.references);
+                } else {
+                    // clinicalInfo가 없는 경우 기본값
+                    document.getElementById('node-description').textContent = '상세 정보 준비 중입니다.';
+                    document.getElementById('node-prevalence').textContent = '-';
+                    document.getElementById('node-evidence').textContent = '-';
+
+                    ['node-assessment-tools', 'node-interventions', 'node-related-conditions', 'node-references'].forEach(id => {
+                        document.getElementById(id).innerHTML = '<li>정보 준비 중</li>';
+                    });
+                }
+            }
+
+            populateList(elementId, items) {
+                const element = document.getElementById(elementId);
+                if (items && items.length > 0) {
+                    if (elementId === 'node-references') {
+                        element.innerHTML = items.map(item => {
+                            if (typeof item === 'object' && item.title) {
+                                let fullTextLink = null;
+                                let linkLabel = '';
+
+                                if (item.pmc) {
+                                    const searchQuery = encodeURIComponent(item.quote || item.section || '');
+                                    fullTextLink = `https://www.ncbi.nlm.nih.gov/pmc/articles/${item.pmc}/${searchQuery ? '?term=' + searchQuery : ''}`;
+                                    linkLabel = '📄 풀텍스트';
+                                } else if (item.doi) {
+                                    fullTextLink = `https://doi.org/${item.doi}`;
+                                    linkLabel = '📄 DOI';
+                                } else if (item.arxiv) {
+                                    fullTextLink = `https://arxiv.org/pdf/${item.arxiv}.pdf`;
+                                    linkLabel = '📄 PDF';
+                                }
+
+                                const citation = `${item.authors ? item.authors + '. ' : ''}${item.title}. ${item.year || ''}.`;
+                                const sectionInfo = item.section ? ` <span style="color: #666; font-size: 0.9em;">(${item.section})</span>` : '';
+                                const quoteInfo = item.quote ? `<br><span style="color: #888; font-size: 0.85em; font-style: italic;">"${item.quote}"</span>` : '';
+
+                                if (fullTextLink) {
+                                    return `<li style="margin-bottom: 12px;">
+                                        <div>${citation}${sectionInfo}</div>
+                                        ${quoteInfo}
+                                        <div style="margin-top: 6px;">
+                                            <a href="${fullTextLink}" target="_blank" rel="noopener noreferrer"
+                                               style="color: #2196f3; text-decoration: none; font-weight: 500;">
+                                                ${linkLabel} →
+                                            </a>
+                                        </div>
+                                    </li>`;
+                                } else {
+                                    return `<li style="margin-bottom: 12px;">${citation}${sectionInfo}${quoteInfo}</li>`;
+                                }
+                            } else if (typeof item === 'string') {
+                                const doiMatch = item.match(/doi:?\s*(10\.\d+\/\S+)/i);
+                                const arxivMatch = item.match(/arXiv:\s*(\d+\.\d+)/i);
+
+                                if (doiMatch) {
+                                    return `<li><a href="https://doi.org/${doiMatch[1]}" target="_blank" style="color: #2196f3;">${item} 📄</a></li>`;
+                                } else if (arxivMatch) {
+                                    return `<li><a href="https://arxiv.org/pdf/${arxivMatch[1]}.pdf" target="_blank" style="color: #2196f3;">${item} 📄</a></li>`;
+                                } else {
+                                    const searchQuery = encodeURIComponent(item);
+                                    return `<li><a href="https://scholar.google.com/scholar?q=${searchQuery}" target="_blank" style="color: #2196f3;">${item} 🔍</a></li>`;
+                                }
+                            }
+                            return `<li>${item}</li>`;
+                        }).join('');
+                    } else {
+                        element.innerHTML = items.map(item => `<li>${item}</li>`).join('');
+                    }
+                } else {
+                    element.innerHTML = '<li>해당 정보 없음</li>';
+                }
+            }
+
+            getNodeTypeDisplay(type) {
+                const typeMap = {
+                    'symptom': '증상',
+                    'cause': '원인',
+                    'lifestyle': '생활습관 요인',
+                    'muscle-specific': '근육 특이적',
+                    'metabolic': '대사적 원인',
+                    'training-error': '훈련 오류',
+                    'biomechanical': '생체역학적'
+                };
+                return typeMap[type] || type;
+            }
+
+            getNodeIcon(type) {
+                const iconMap = {
+                    'symptom': '🩺',
+                    'cause': '🔍',
+                    'lifestyle': '🏃',
+                    'muscle-specific': '💪',
+                    'metabolic': '⚡',
+                    'training-error': '⚠️',
+                    'biomechanical': '🦴'
+                };
+                return iconMap[type] || '⚪';
+            }
+
+            addNewNode(parentNode) {
+                if (!this.graph) return;
+
+                const nodeLabel = prompt('새 노드 이름을 입력하세요:', '');
+                if (!nodeLabel || nodeLabel.trim() === '') return;
+
+                const edgeLabel = prompt('화살표에 표시할 답을 입력하세요 (예: ~때문에, ~로 인해):', '');
+
+                const logicType = prompt('논리 관계를 선택하세요:\n1. 필요조건 (화살표 1개)\n2. 충분조건 (화살표 2개)\n\n숫자를 입력:', '1');
+
+                // 새 노드 생성
+                const newNodeId = `node-${Date.now()}`;
+                const newNode = {
+                    id: newNodeId,
+                    label: nodeLabel.trim(),
+                    type: 'cause',
+                    x: parentNode.x + (Math.random() - 0.5) * 200,
+                    y: parentNode.y + (Math.random() - 0.5) * 200,
+                    size: 25,
+                    whyLevel: parentNode.whyLevel + 1,
+                    animationVisible: true,
+                    alpha: 1,
+                    currentSize: 25
+                };
+
+                // 새 엣지 생성
+                const newEdge = {
+                    id: `edge-${Date.now()}`,
+                    source: parentNode.id,
+                    target: newNodeId,
+                    type: 'causes',
+                    label: edgeLabel && edgeLabel.trim() !== '' ? edgeLabel.trim() : undefined,
+                    logicType: logicType === '2' ? 'sufficient' : 'necessary',
+                    confidence: 0.8,
+                    width: 2,
+                    color: '#4A90E2',
+                    animationVisible: true,
+                    alpha: 1
+                };
+
+                // 그래프에 추가
+                this.graph.nodes.push(newNode);
+                this.graph.edges.push(newEdge);
+                this.nodeMap.set(newNodeId, newNode);
+
+                console.log(`✅ 새 노드 추가됨: ${nodeLabel} (부모: ${parentNode.label}, 관계: ${newEdge.logicType})`);
+
+                // 화면 갱신
+                this.hoveredNode = null;
+                this.addButtonArea = null;
+                this.render();
+            }
+
+            setNodeAsWhy0(node) {
+                console.log(`🎯 새로운 Why0 설정: ${node.label}`);
+
+                // Why 깊이 재계산
+                this.recalculateWhyDepths(node);
+
+                // 사이드패널 닫기
+                this.closeNodeInfoPanel();
+
+                console.log('✅ Why 깊이 재계산 완료 - 새로운 분석 시작점이 설정되었습니다!');
+            }
+
+            async recalculateWhyDepths(rootNode) {
+                if (!this.graph) return;
+
+                // 애니메이터가 있으면 애니메이션과 함께 깊이 재계산
+                const app = window.ptWiki;
+                if (app && app.animator && app.animator.animateDepthRecalculation) {
+                    // 애니메이션 실행 (내부에서 깊이 계산 수행)
+                    await app.animator.animateDepthRecalculation(rootNode, () => {
+                        this.performDepthCalculation(rootNode);
+                    });
+                } else {
+                    // 애니메이터가 없으면 기본 방식
+                    this.performDepthCalculation(rootNode);
+                    this.render();
+                }
+            }
+
+            performDepthCalculation(rootNode) {
+                console.log('🔄 깊이 재계산 시작:', rootNode.label);
+
+                // 1단계: 모든 노드 완전 초기화 및 가시성 강제 설정
+                this.graph.nodes.forEach(node => {
+                    node.whyLevel = 0;
+                    node.pathHighlight = false;
+                    // 가시성 강제 설정 (절대 false가 되면 안 됨)
+                    node.animationVisible = true;
+                    // 알파값 강제 설정
+                    node.alpha = 1;
+                    // 크기 강제 설정
+                    node.currentSize = node.size || 20;
+                });
+
+                // 2단계: 모든 엣지 가시성 강제 설정
+                this.graph.edges.forEach(edge => {
+                    edge.animationVisible = true;
+                    edge.alpha = 1;
+                });
+
+                // 3단계: 루트 노드를 Why0로 설정
+                rootNode.whyLevel = 0;
+
+                // 4단계: BFS를 사용해서 연결된 노드들의 깊이 계산
+                const visited = new Set();
+                const queue = [{ node: rootNode, depth: 0 }];
+                visited.add(rootNode.id);
+
+                while (queue.length > 0) {
+                    const { node: currentNode, depth } = queue.shift();
+
+                    // 현재 노드와 연결된 엣지들 찾기 (양방향)
+                    const connectedEdges = this.graph.edges.filter(edge =>
+                        edge.source === currentNode.id || edge.target === currentNode.id
+                    );
+
+                    for (const edge of connectedEdges) {
+                        let nextNodeId;
+
+                        if (edge.source === currentNode.id) {
+                            nextNodeId = edge.target;
+                        } else {
+                            nextNodeId = edge.source;
+                        }
+
+                        if (!visited.has(nextNodeId)) {
+                            const nextNode = this.graph.nodes.find(n => n.id === nextNodeId);
+                            if (nextNode) {
+                                const newDepth = depth + 1;
+                                nextNode.whyLevel = newDepth;
+                                nextNode.animationVisible = true; // 명시적 가시성
+                                nextNode.alpha = 1;
+                                nextNode.currentSize = nextNode.size || 20;
+
+                                queue.push({ node: nextNode, depth: newDepth });
+                                visited.add(nextNodeId);
+                            }
+                        }
+                    }
+                }
+
+                // 5단계: 연결되지 않은 노드들도 명시적으로 표시 (중요!)
+                const unvisitedNodes = this.graph.nodes.filter(n => !visited.has(n.id));
+                if (unvisitedNodes.length > 0) {
+                    console.log(`⚠️ ${unvisitedNodes.length}개의 연결되지 않은 노드 발견:`, unvisitedNodes.map(n => n.label));
+                    unvisitedNodes.forEach(node => {
+                        node.animationVisible = true;
+                        node.alpha = 0.5; // 약간 투명하게 표시하여 연결 안 됨을 시각적으로 표현
+                        node.currentSize = node.size || 20;
+                        node.whyLevel = -1; // 특수값: 연결 안 된 노드
+                    });
+                }
+
+                console.log(`✅ 깊이 계산 완료: ${visited.size}개 연결, ${unvisitedNodes.length}개 미연결`);
+            }
+
+            updateGraph(graph) {
+                this.graph = graph;
+
+                // 🚀 노드 맵 구축 (O(n) → O(1) 검색)
+                this.nodeMap.clear();
+                if (this.graph && this.graph.nodes) {
+                    this.graph.nodes.forEach(node => {
+                        this.nodeMap.set(node.id, node);
+                    });
+                }
+
+                // 가시성 플래그 리셋
+                this.visibilityInitialized = false;
+
+                this.render();
+            }
+
+            startPhysicsLoop() {
+                const tick = () => {
+                    if (this.physics.enabled && this.graph) {
+                        this.applyForces();
+                    }
+                    requestAnimationFrame(tick);
+                };
+                requestAnimationFrame(tick);
+            }
+
+            applyForces() {
+                if (!this.graph || !this.graph.nodes) return;
+
+                const nodes = this.graph.nodes.filter(n => n.animationVisible !== false);
+
+                // 각 노드에 속도 초기화
+                nodes.forEach(node => {
+                    if (!node.vx) node.vx = 0;
+                    if (!node.vy) node.vy = 0;
+                });
+
+                // 1. 반발력 (모든 노드 쌍)
+                for (let i = 0; i < nodes.length; i++) {
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const n1 = nodes[i];
+                        const n2 = nodes[j];
+
+                        const dx = n2.x - n1.x;
+                        const dy = n2.y - n1.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+
+                        const force = this.physics.repulsion / (dist * dist);
+                        const fx = (dx / dist) * force;
+                        const fy = (dy / dist) * force;
+
+                        n1.vx -= fx;
+                        n1.vy -= fy;
+                        n2.vx += fx;
+                        n2.vy += fy;
+                    }
+                }
+
+                // 2. 인력 (연결된 노드)
+                if (this.graph.edges) {
+                    this.graph.edges.forEach(edge => {
+                        const source = this.nodeMap.get(edge.source);
+                        const target = this.nodeMap.get(edge.target);
+
+                        if (source && target && source.animationVisible !== false && target.animationVisible !== false) {
+                            const dx = target.x - source.x;
+                            const dy = target.y - source.y;
+                            const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+
+                            const force = dist * this.physics.attraction;
+                            const fx = (dx / dist) * force;
+                            const fy = (dy / dist) * force;
+
+                            source.vx += fx;
+                            source.vy += fy;
+                            target.vx -= fx;
+                            target.vy -= fy;
+                        }
+                    });
+                }
+
+                // 3. 중심으로 당기기
+                nodes.forEach(node => {
+                    node.vx -= node.x * this.physics.centerPull;
+                    node.vy -= node.y * this.physics.centerPull;
+                });
+
+                // 4. 위치 업데이트 및 감쇠
+                nodes.forEach(node => {
+                    node.vx *= this.physics.damping;
+                    node.vy *= this.physics.damping;
+                    node.x += node.vx;
+                    node.y += node.vy;
+                });
+
+                this.render();
+            }
+
+            worldToScreen(worldX, worldY) {
+                return {
+                    x: (worldX - this.viewport.x) * this.viewport.zoom + this.viewport.width / 2,
+                    y: (worldY - this.viewport.y) * this.viewport.zoom + this.viewport.height / 2
+                };
+            }
+
+            render() {
+                if (!this.graph) return;
+
+                const perfStart = performance.now();
+
+                // 🚀 가시성 초기화 (최초 1회만 실행)
+                if (!this.visibilityInitialized) {
+                    this.graph.nodes.forEach(node => {
+                        if (node.animationVisible === undefined) node.animationVisible = true;
+                        if (node.alpha === undefined || node.alpha === 0) node.alpha = 1;
+                        if (!node.currentSize) node.currentSize = node.size || 20;
+                    });
+
+                    this.graph.edges.forEach(edge => {
+                        if (edge.animationVisible === undefined) edge.animationVisible = true;
+                    });
+
+                    this.visibilityInitialized = true;
+                }
+
+                // 배경 지우기
+                this.ctx.clearRect(0, 0, this.viewport.width, this.viewport.height);
+
+                // 🚀 노드 위치 캐시 갱신 (뷰포트/줌 변경 시에만)
+                this.nodePositionCache.clear();
+                for (const node of this.graph.nodes) {
+                    if (node.animationVisible !== false) {
+                        this.nodePositionCache.set(node.id, this.worldToScreen(node.x, node.y));
+                    }
+                }
+
+                // 엣지 그리기 (최적화: Map 검색 O(1))
+                for (const edge of this.graph.edges) {
+                    const sourceNode = this.nodeMap.get(edge.source);
+                    const targetNode = this.nodeMap.get(edge.target);
+
+                    // 가시성 체크: false가 아니면 모두 표시 (undefined, true 모두 표시)
+                    const sourceVisible = sourceNode && sourceNode.animationVisible !== false;
+                    const targetVisible = targetNode && targetNode.animationVisible !== false;
+                    const edgeVisible = edge.animationVisible !== false;
+
+                    if (sourceVisible && targetVisible && edgeVisible) {
+
+                        // 🚀 캐시된 위치 사용
+                        const sourcePos = this.nodePositionCache.get(edge.source);
+                        const targetPos = this.nodePositionCache.get(edge.target);
+
+                        // 점진적 그리기 지원
+                        const drawProgress = edge.drawProgress !== undefined ? edge.drawProgress : 1;
+                        const currentTargetX = sourcePos.x + (targetPos.x - sourcePos.x) * drawProgress;
+                        const currentTargetY = sourcePos.y + (targetPos.y - sourcePos.y) * drawProgress;
+
+                        // 알파 지원
+                        this.ctx.globalAlpha = edge.alpha !== undefined ? edge.alpha : 1;
+
+                        // 선 그리기
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(sourcePos.x, sourcePos.y);
+                        this.ctx.lineTo(currentTargetX, currentTargetY);
+                        this.ctx.strokeStyle = edge.color || '#666';
+
+                        // 애니메이션 너비 또는 기본 너비
+                        let lineWidth = edge.animatedWidth || edge.width || 2;
+                        if (edge.pathHighlight) lineWidth *= 1.5;
+                        this.ctx.lineWidth = lineWidth;
+
+                        this.ctx.stroke();
+
+                        // 화살표 그리기 (노드와 겹치지 않도록 노드 경계에서 시작)
+                        const targetNodeSize = (targetNode.currentSize || targetNode.size || 20) * this.viewport.zoom;
+                        const angle = Math.atan2(currentTargetY - sourcePos.y, currentTargetX - sourcePos.x);
+
+                        // 타겟 노드 경계까지만 선 그리기
+                        const arrowTipX = currentTargetX - targetNodeSize * Math.cos(angle);
+                        const arrowTipY = currentTargetY - targetNodeSize * Math.sin(angle);
+
+                        if (drawProgress > 0.1) {
+                            // 화살표 크기 (필요조건/충분조건에 따라 다르게)
+                            const arrowType = edge.logicType || 'necessary'; // 'necessary', 'sufficient', 'both'
+                            let arrowLength = 15;
+                            let arrowWidth = Math.PI / 6;
+
+                            // 화살표 강조 효과
+                            if (edge.arrowEmphasis && edge.arrowEmphasis.active) {
+                                const elapsed = Date.now() - edge.arrowEmphasis.startTime;
+                                const progress = Math.min(elapsed / edge.arrowEmphasis.duration, 1);
+                                arrowLength = 15 + 8 * Math.sin(progress * Math.PI * 2);
+                                this.ctx.lineWidth = lineWidth * (1 + 0.5 * Math.sin(progress * Math.PI * 4));
+
+                                if (progress >= 1) {
+                                    edge.arrowEmphasis.active = false;
+                                }
+                            }
+
+                            this.ctx.strokeStyle = edge.color || '#666';
+                            this.ctx.fillStyle = edge.color || '#666';
+
+                            // 화살표 그리기 (채워진 삼각형)
+                            this.ctx.beginPath();
+                            this.ctx.moveTo(arrowTipX, arrowTipY);
+                            this.ctx.lineTo(
+                                arrowTipX - arrowLength * Math.cos(angle - arrowWidth),
+                                arrowTipY - arrowLength * Math.sin(angle - arrowWidth)
+                            );
+                            this.ctx.lineTo(
+                                arrowTipX - arrowLength * Math.cos(angle + arrowWidth),
+                                arrowTipY - arrowLength * Math.sin(angle + arrowWidth)
+                            );
+                            this.ctx.closePath();
+                            this.ctx.fill();
+
+                            // 필요조건/충분조건 표시
+                            if (arrowType === 'sufficient') {
+                                // 충분조건: 이중 화살표
+                                this.ctx.beginPath();
+                                this.ctx.moveTo(arrowTipX - arrowLength, arrowTipY);
+                                this.ctx.lineTo(
+                                    arrowTipX - arrowLength * 1.5 * Math.cos(angle - arrowWidth),
+                                    arrowTipY - arrowLength * 1.5 * Math.sin(angle - arrowWidth)
+                                );
+                                this.ctx.lineTo(
+                                    arrowTipX - arrowLength * 1.5 * Math.cos(angle + arrowWidth),
+                                    arrowTipY - arrowLength * 1.5 * Math.sin(angle + arrowWidth)
+                                );
+                                this.ctx.closePath();
+                                this.ctx.fill();
+                            }
+                        }
+
+                        // 엣지 라벨 그리기 (선을 따라 회전)
+                        if (edge.label && this.viewport.zoom > 0.3) {
+                            const midX = (sourcePos.x + currentTargetX) / 2;
+                            const midY = (sourcePos.y + currentTargetY) / 2;
+
+                            // 선의 각도 계산
+                            const textAngle = Math.atan2(currentTargetY - sourcePos.y, currentTargetX - sourcePos.x);
+
+                            // 텍스트가 거꾸로 되지 않도록 조정
+                            let displayAngle = textAngle;
+                            if (textAngle > Math.PI / 2 || textAngle < -Math.PI / 2) {
+                                displayAngle = textAngle + Math.PI;
+                            }
+
+                            this.ctx.save();
+                            this.ctx.translate(midX, midY);
+                            this.ctx.rotate(displayAngle);
+
+                            const edgeFontSize = (this.textScale || 1) * Math.max(10, 11 * this.viewport.zoom);
+                            this.ctx.font = `${edgeFontSize}px Arial`;
+                            this.ctx.textAlign = 'center';
+                            this.ctx.textBaseline = 'bottom';
+
+                            // 배경 박스
+                            const textWidth = this.ctx.measureText(edge.label).width;
+                            const padding = 4;
+                            this.ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+                            this.ctx.fillRect(-textWidth/2 - padding, -edgeFontSize - 2, textWidth + padding * 2, edgeFontSize + 4);
+
+                            // 라벨 텍스트
+                            this.ctx.fillStyle = '#2C3E50';
+                            this.ctx.fillText(edge.label, 0, -2);
+
+                            this.ctx.restore();
+                        }
+
+                        this.ctx.globalAlpha = 1; // 알파 리셋
+                    }
+                }
+
+                // 노드 그리기 (개선된 애니메이션 지원)
+                for (const node of this.graph.nodes) {
+                    // 가시성 체크: false인 경우만 건너뛰기 (undefined, true는 모두 표시)
+                    if (node.animationVisible === false) continue;
+
+                    const pos = this.worldToScreen(node.x, node.y);
+                    let size = (node.currentSize || node.size || 20) * this.viewport.zoom;
+
+                    // 알파 지원
+                    this.ctx.globalAlpha = node.alpha !== undefined ? node.alpha : 1;
+
+                    // 펄스 효과 (병행 원인)
+                    if (node.isParallelCause && node.pulsePhase !== undefined) {
+                        const pulseScale = 1 + 0.2 * Math.sin(node.pulsePhase);
+                        size *= pulseScale;
+                    }
+
+                    // 경로 하이라이트 펄스
+                    if (node.pathHighlight && node.highlightPulse) {
+                        const elapsed = Date.now() - node.highlightPulse;
+                        const pulseScale = 1 + 0.3 * Math.sin((elapsed / 200) % (Math.PI * 2));
+                        size *= pulseScale;
+                    }
+
+                    // 노드 원
+                    this.ctx.beginPath();
+                    this.ctx.arc(pos.x, pos.y, size, 0, 2 * Math.PI);
+
+                    // 최신 노드는 진한 파랑, 아니면 하늘색
+                    let fillColor = node.highlightColor || node.color || '#87CEEB';
+
+                    // Why 레벨 표시를 위한 테두리
+                    if (node.whyLevel > 0) {
+                        this.ctx.lineWidth = 3;
+                        this.ctx.strokeStyle = '#4A90E2';
+                    } else {
+                        this.ctx.lineWidth = 2;
+                        this.ctx.strokeStyle = '#5BA3E8';
+                    }
+
+                    this.ctx.fillStyle = fillColor;
+                    this.ctx.fill();
+                    this.ctx.stroke();
+
+                    // 노드 안에 라벨 표시
+                    const fontSize = (this.textScale || 1) * Math.max(10, 12 * this.viewport.zoom);
+                    this.ctx.font = `${fontSize}px Arial`;
+                    this.ctx.textAlign = 'center';
+                    this.ctx.textBaseline = 'middle';
+
+                    // 텍스트 줄바꿈 처리
+                    const maxWidth = size * 1.8;
+                    const words = node.label.split(' ');
+                    let lines = [];
+                    let currentLine = '';
+
+                    for (const word of words) {
+                        const testLine = currentLine + (currentLine ? ' ' : '') + word;
+                        const metrics = this.ctx.measureText(testLine);
+                        if (metrics.width > maxWidth && currentLine !== '') {
+                            lines.push(currentLine);
+                            currentLine = word;
+                        } else {
+                            currentLine = testLine;
+                        }
+                    }
+                    if (currentLine) lines.push(currentLine);
+
+                    // 줄 수에 따라 위치 조정
+                    const lineHeight = fontSize * 1.2;
+                    const totalHeight = lines.length * lineHeight;
+                    const startY = pos.y - totalHeight / 2 + lineHeight / 2;
+
+                    this.ctx.fillStyle = '#FFFFFF';
+                    lines.forEach((line, i) => {
+                        this.ctx.fillText(line, pos.x, startY + i * lineHeight);
+                    });
+
+                    // Why 레벨 표시 (왜? 배지)
+                    if (node.whyLevel > 0) {
+                        const badgeSize = fontSize * 0.8;
+                        const badgeX = pos.x - size * 0.7;
+                        const badgeY = pos.y - size * 0.7;
+
+                        // 배지 배경
+                        this.ctx.fillStyle = '#FF6B6B';
+                        this.ctx.beginPath();
+                        this.ctx.arc(badgeX, badgeY, badgeSize, 0, 2 * Math.PI);
+                        this.ctx.fill();
+
+                        // "왜?" 텍스트
+                        this.ctx.fillStyle = 'white';
+                        this.ctx.font = `bold ${badgeSize * 1.2}px Arial`;
+                        this.ctx.fillText('왜?', badgeX, badgeY);
+                    }
+
+                    // 최신 노드 표시 (NEW 배지)
+                    if (node.isRecent) {
+                        const badgeSize = fontSize * 0.6;
+                        const badgeX = pos.x + size * 0.7;
+                        const badgeY = pos.y - size * 0.7;
+
+                        // 배지 배경
+                        this.ctx.fillStyle = '#10B981';
+                        this.ctx.beginPath();
+                        this.ctx.arc(badgeX, badgeY, badgeSize, 0, 2 * Math.PI);
+                        this.ctx.fill();
+
+                        // "NEW" 텍스트
+                        this.ctx.fillStyle = 'white';
+                        this.ctx.font = `bold ${badgeSize * 0.9}px Arial`;
+                        this.ctx.fillText('N', badgeX, badgeY);
+                    }
+
+                    // 순서도 레이블 (블루 박스 대신 캔버스에 직접)
+                    if (node.flowchartLabel && Date.now() < node.flowchartLabel.showUntil) {
+                        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                        this.ctx.font = `bold ${Math.max(12, 14 * this.viewport.zoom)}px Arial`;
+                        this.ctx.textAlign = 'center';
+                        this.ctx.textBaseline = 'bottom';
+
+                        // 배경 박스
+                        const textWidth = this.ctx.measureText(node.flowchartLabel.text).width;
+                        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                        this.ctx.fillRect(pos.x - textWidth/2 - 5, pos.y - size - 35, textWidth + 10, 25);
+
+                        // 텍스트
+                        this.ctx.fillStyle = '#333';
+                        this.ctx.fillText(node.flowchartLabel.text, pos.x, pos.y - size - 15);
+                    }
+
+                    this.ctx.globalAlpha = 1; // 알파 리셋
+                }
+
+                // 호버된 노드에 +버튼 표시
+                if (this.hoveredNode && this.mouseX && this.mouseY) {
+                    const pos = this.worldToScreen(this.hoveredNode.x, this.hoveredNode.y);
+                    const nodeSize = (this.hoveredNode.currentSize || this.hoveredNode.size || 20) * this.viewport.zoom;
+                    const buttonSize = 24;
+                    const buttonX = pos.x + nodeSize + 10;
+                    const buttonY = pos.y - buttonSize / 2;
+
+                    // +버튼 배경
+                    this.ctx.fillStyle = '#2196f3';
+                    this.ctx.strokeStyle = '#ffffff';
+                    this.ctx.lineWidth = 2;
+                    this.ctx.beginPath();
+                    this.ctx.arc(buttonX + buttonSize/2, buttonY + buttonSize/2, buttonSize/2, 0, 2 * Math.PI);
+                    this.ctx.fill();
+                    this.ctx.stroke();
+
+                    // + 기호
+                    this.ctx.strokeStyle = '#ffffff';
+                    this.ctx.lineWidth = 3;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(buttonX + buttonSize/2 - 6, buttonY + buttonSize/2);
+                    this.ctx.lineTo(buttonX + buttonSize/2 + 6, buttonY + buttonSize/2);
+                    this.ctx.moveTo(buttonX + buttonSize/2, buttonY + buttonSize/2 - 6);
+                    this.ctx.lineTo(buttonX + buttonSize/2, buttonY + buttonSize/2 + 6);
+                    this.ctx.stroke();
+
+                    // +버튼 클릭 영역 저장
+                    this.addButtonArea = {
+                        x: buttonX,
+                        y: buttonY,
+                        size: buttonSize,
+                        node: this.hoveredNode
+                    };
+                } else {
+                    this.addButtonArea = null;
+                }
+
+                const perfEnd = performance.now();
+                const renderTime = perfEnd - perfStart;
+
+                if (window.perfStats === undefined) {
+                    window.perfStats = { total: 0, count: 0, max: 0, min: Infinity };
+                }
+                window.perfStats.total += renderTime;
+                window.perfStats.count++;
+                window.perfStats.max = Math.max(window.perfStats.max, renderTime);
+                window.perfStats.min = Math.min(window.perfStats.min, renderTime);
+
+                if (window.perfStats.count % 60 === 0) {
+                    const avg = window.perfStats.total / window.perfStats.count;
+                    console.log(`📊 렌더링 성능 (60프레임 평균): ${avg.toFixed(2)}ms | 최대: ${window.perfStats.max.toFixed(2)}ms | 최소: ${window.perfStats.min.toFixed(2)}ms | FPS: ${(1000/avg).toFixed(1)}`);
+                }
+            }
+        }
+
+        // 개선된 5Why 순서도 애니메이터
+        class Enhanced5WhyAnimator {
+            constructor(renderer, eventBus) {
+                this.renderer = renderer;
+                this.eventBus = eventBus;
+                this.animationDuration = 800;
+                this.isAnimating = false;
+                this.currentPath = [];
+                this.whyLevel = 0;
+            }
+
+            async startDemo() {
+                if (this.isAnimating || !this.renderer.graph) return;
+
+                this.isAnimating = true;
+                this.whyLevel = 0;
+                this.currentPath = [];
+                console.log('🎬 5Why 순서도 애니메이션 시작...');
+
+                const graph = this.renderer.graph;
+
+                // 모든 요소 초기화
+                this.resetGraphForAnimation(graph);
+
+                // 5Why 탐색 경로 (순서도 스타일)
+                const explorationPath = [
+                    {
+                        type: 'node',
+                        id: 'calf-pain',
+                        whyLevel: 1,
+                        label: 'Why1: 종아리 통증?',
+                        description: '문제 식별'
+                    },
+                    {
+                        type: 'edge',
+                        id: 'edge-1',
+                        description: '가장 직접적 원인 탐색',
+                        confidence: 0.85
+                    },
+                    {
+                        type: 'node',
+                        id: 'muscle-fatigue',
+                        whyLevel: 2,
+                        label: 'Why2: 근육 피로?',
+                        description: '주요 원인 식별'
+                    },
+                    {
+                        type: 'edge',
+                        id: 'edge-4',
+                        description: '근본 원인으로 추적',
+                        confidence: 0.80
+                    },
+                    {
+                        type: 'node',
+                        id: 'biomechanical-dysfunction',
+                        whyLevel: 3,
+                        label: 'Why3: 생체역학적 이상?',
+                        description: '시스템 분석'
+                    },
+                    {
+                        type: 'edge',
+                        id: 'edge-8',
+                        description: '라이프스타일 요인 연결',
+                        confidence: 0.60
+                    },
+                    {
+                        type: 'node',
+                        id: 'poor-footwear',
+                        whyLevel: 4,
+                        label: 'Why4: 부적절한 신발?',
+                        description: '구체적 원인'
+                    },
+                    {
+                        type: 'parallel_cause',
+                        id: 'prolonged-sitting',
+                        whyLevel: 4,
+                        label: 'Why4: 장시간 앉기?',
+                        description: '병행 원인 발견'
+                    }
+                ];
+
+                for (const step of explorationPath) {
+                    await this.animateExplorationStep(step, graph);
+                    this.currentPath.push(step);
+                }
+
+                // 최종 경로 하이라이트
+                await this.highlightCompletePath(graph);
+
+                this.isAnimating = false;
+                console.log('✅ 5Why 순서도 완성!');
+            }
+
+            resetGraphForAnimation(graph) {
+                graph.nodes.forEach(node => {
+                    node.animationVisible = false;
+                    node.whyLevel = 0;
+                    node.pathHighlight = false;
+                    node.currentSize = 5;
+                    node.targetSize = node.size;
+                });
+                graph.edges.forEach(edge => {
+                    edge.animationVisible = false;
+                    edge.drawProgress = 0;
+                    edge.pathHighlight = false;
+                });
+            }
+
+            async animateExplorationStep(step, graph) {
+                return new Promise(resolve => {
+                    if (step.type === 'node') {
+                        const node = graph.nodes.find(n => n.id === step.id);
+                        if (node) {
+                            node.animationVisible = true;
+                            node.whyLevel = step.whyLevel;
+                            node.currentSize = 8;
+
+                            // 노드 페이드인 및 크기 증가
+                            const startTime = performance.now();
+                            const animate = (currentTime) => {
+                                const elapsed = currentTime - startTime;
+                                const progress = Math.min(elapsed / this.animationDuration, 1);
+                                const easeProgress = 1 - Math.pow(1 - progress, 3);
+
+                                node.currentSize = 8 + (node.size - 8) * easeProgress;
+                                node.alpha = progress;
+
+                                // Why 레벨에 따른 색상 강조
+                                const baseColor = node.color || '#2196f3';
+                                const whyIntensity = Math.min(step.whyLevel * 0.2, 0.8);
+                                node.highlightColor = this.interpolateColor(baseColor, '#ff4444', whyIntensity);
+
+                                this.renderer.render();
+
+                                if (progress < 1) {
+                                    requestAnimationFrame(animate);
+                                } else {
+                                    // 순서도 레이블 표시 (블루 박스 대신 직접 캔버스에)
+                                    this.showFlowchartLabel(node, step.label, step.description);
+                                    setTimeout(resolve, 800);
+                                }
+                            };
+                            requestAnimationFrame(animate);
+                        }
+                    } else if (step.type === 'edge') {
+                        const edge = graph.edges.find(e => e.id === step.id);
+                        if (edge) {
+                            edge.animationVisible = true;
+                            edge.drawProgress = 0;
+
+                            // 화살표 방향성 강조를 위한 점진적 그리기
+                            const startTime = performance.now();
+                            const animate = (currentTime) => {
+                                const elapsed = currentTime - startTime;
+                                const progress = Math.min(elapsed / (this.animationDuration * 1.5), 1);
+
+                                edge.drawProgress = progress;
+                                edge.alpha = progress;
+
+                                // 신뢰도에 따른 선 두께
+                                edge.animatedWidth = (step.confidence || 0.5) * 4 * progress;
+
+                                this.renderer.render();
+
+                                if (progress < 1) {
+                                    requestAnimationFrame(animate);
+                                } else {
+                                    // 화살표 방향 강조
+                                    this.emphasizeArrowDirection(edge);
+                                    setTimeout(resolve, 400);
+                                }
+                            };
+                            requestAnimationFrame(animate);
+                        }
+                    } else if (step.type === 'parallel_cause') {
+                        // 병행 원인 강조
+                        const node = graph.nodes.find(n => n.id === step.id);
+                        if (node) {
+                            node.animationVisible = true;
+                            node.whyLevel = step.whyLevel;
+                            node.isParallelCause = true;
+
+                            const startTime = performance.now();
+                            const animate = (currentTime) => {
+                                const elapsed = currentTime - startTime;
+                                const progress = Math.min(elapsed / this.animationDuration, 1);
+
+                                node.currentSize = node.size * (0.5 + 0.5 * progress);
+                                node.alpha = progress;
+                                node.pulsePhase = (elapsed / 200) % (Math.PI * 2); // 펄스 효과
+
+                                this.renderer.render();
+
+                                if (progress < 1) {
+                                    requestAnimationFrame(animate);
+                                } else {
+                                    this.showFlowchartLabel(node, step.label, step.description);
+                                    setTimeout(resolve, 600);
+                                }
+                            };
+                            requestAnimationFrame(animate);
+                        }
+                    }
+                });
+            }
+
+            showFlowchartLabel(node, label, description) {
+                // 캔버스에 직접 레이블 표시 (블루 박스 제거)
+                const canvas = this.renderer.canvas;
+                const ctx = canvas.getContext('2d');
+
+                // 임시로 레이블 정보를 노드에 저장 (렌더러에서 그리도록)
+                node.flowchartLabel = {
+                    text: label,
+                    description: description,
+                    showUntil: Date.now() + 2000
+                };
+
+                console.log(`🔍 ${label}: ${description}`);
+            }
+
+            emphasizeArrowDirection(edge) {
+                // 화살표 방향 강조를 위한 속성 설정
+                edge.arrowEmphasis = {
+                    active: true,
+                    startTime: Date.now(),
+                    duration: 1000
+                };
+            }
+
+            interpolateColor(color1, color2, factor) {
+                // 간단한 색상 보간
+                if (factor <= 0) return color1;
+                if (factor >= 1) return color2;
+
+                const c1 = this.hexToRgb(color1);
+                const c2 = this.hexToRgb(color2);
+
+                if (!c1 || !c2) return color1;
+
+                const r = Math.round(c1.r + (c2.r - c1.r) * factor);
+                const g = Math.round(c1.g + (c2.g - c1.g) * factor);
+                const b = Math.round(c1.b + (c2.b - c1.b) * factor);
+
+                return `rgb(${r}, ${g}, ${b})`;
+            }
+
+            hexToRgb(hex) {
+                const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return result ? {
+                    r: parseInt(result[1], 16),
+                    g: parseInt(result[2], 16),
+                    b: parseInt(result[3], 16)
+                } : null;
+            }
+
+            async highlightCompletePath(graph) {
+                // 전체 탐색 경로를 순서도 스타일로 하이라이트
+                const pathNodes = graph.nodes.filter(n => n.whyLevel > 0);
+                const pathEdges = graph.edges.filter(e => e.drawProgress > 0);
+
+                // 순차적으로 경로 강조
+                for (let level = 1; level <= Math.max(...pathNodes.map(n => n.whyLevel)); level++) {
+                    const levelNodes = pathNodes.filter(n => n.whyLevel === level);
+                    levelNodes.forEach(node => {
+                        node.pathHighlight = true;
+                        node.highlightPulse = Date.now();
+                    });
+
+                    this.renderer.render();
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                }
+
+                console.log('🎯 5Why 분석 완료 - 체계적인 원인 탐색 결과를 확인하세요!');
+            }
+
+            async animateDepthRecalculation(newRootNode, recalculateCallback) {
+                if (this.isAnimating) return;
+
+                this.isAnimating = true;
+                console.log(`🔄 새로운 Why0 설정 애니메이션: ${newRootNode.label}`);
+
+                const graph = this.renderer.graph;
+                if (!graph) {
+                    this.isAnimating = false;
+                    return;
+                }
+
+                // 1단계: 기존 Why 레벨 페이드아웃
+                await this.fadeOutOldWhyLevels(graph);
+
+                // 2단계: 새로운 루트 노드 강조
+                await this.highlightNewRoot(newRootNode);
+
+                // 2.5단계: 깊이 재계산 실행 (애니메이션 중간에!)
+                if (recalculateCallback) {
+                    recalculateCallback();
+                }
+
+                // 3단계: 새로운 깊이 순차적 표시
+                await this.revealNewDepthStructure(graph, newRootNode);
+
+                this.isAnimating = false;
+                console.log('✅ Why 깊이 재설정 애니메이션 완료!');
+            }
+
+            async fadeOutOldWhyLevels(graph) {
+                return new Promise(resolve => {
+                    const duration = 500;
+                    const startTime = performance.now();
+
+                    const animate = (currentTime) => {
+                        const elapsed = currentTime - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        const fadeProgress = 1 - progress;
+
+                        // 기존 Why 레벨 표시 페이드아웃 (노드 자체는 유지)
+                        graph.nodes.forEach(node => {
+                            if (node.whyLevel > 0) {
+                                node.whyLevelAlpha = fadeProgress;
+                            }
+                            // 노드 가시성은 항상 유지
+                            node.animationVisible = true;
+                        });
+
+                        this.renderer.render();
+
+                        if (progress < 1) {
+                            requestAnimationFrame(animate);
+                        } else {
+                            // 페이드아웃 완료 후 정리 (가시성 유지)
+                            graph.nodes.forEach(node => {
+                                node.whyLevelAlpha = 1;
+                                node.whyLevel = 0;
+                                node.animationVisible = true; // 명시적 가시성 유지
+                            });
+                            resolve();
+                        }
+                    };
+
+                    requestAnimationFrame(animate);
+                });
+            }
+
+            async highlightNewRoot(rootNode) {
+                return new Promise(resolve => {
+                    const duration = 800;
+                    const startTime = performance.now();
+
+                    const originalSize = rootNode.size;
+                    rootNode.newRootHighlight = true;
+
+                    const animate = (currentTime) => {
+                        const elapsed = currentTime - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+
+                        // 펄스 효과
+                        const pulseScale = 1 + 0.5 * Math.sin(progress * Math.PI * 4);
+                        rootNode.currentSize = originalSize * pulseScale;
+
+                        // 색상 변화
+                        const intensity = Math.sin(progress * Math.PI * 2);
+                        rootNode.newRootPulse = intensity;
+
+                        this.renderer.render();
+
+                        if (progress < 1) {
+                            requestAnimationFrame(animate);
+                        } else {
+                            rootNode.currentSize = originalSize;
+                            rootNode.newRootHighlight = false;
+                            rootNode.newRootPulse = 0;
+                            resolve();
+                        }
+                    };
+
+                    requestAnimationFrame(animate);
+                });
+            }
+
+            async revealNewDepthStructure(graph, rootNode) {
+                // 루트 노드(Why0) 먼저 완전히 표시
+                rootNode.alpha = 1;
+                rootNode.currentSize = rootNode.size || 20;
+                rootNode.animationVisible = true;
+                this.renderer.render();
+
+                // 새로운 깊이 구조를 순차적으로 표시
+                const maxDepth = Math.max(...graph.nodes.map(n => n.whyLevel));
+
+                for (let depth = 1; depth <= maxDepth; depth++) {
+                    const nodesAtDepth = graph.nodes.filter(n => n.whyLevel === depth);
+
+                    if (nodesAtDepth.length === 0) continue;
+
+                    await this.animateDepthLevel(nodesAtDepth, depth);
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                }
+
+                // 연결 안 된 노드들도 표시 확인
+                const unconnectedNodes = graph.nodes.filter(n => n.whyLevel === -1);
+                unconnectedNodes.forEach(node => {
+                    node.alpha = 0.5;
+                    node.currentSize = node.size || 20;
+                    node.animationVisible = true;
+                });
+            }
+
+            async animateDepthLevel(nodes, depth) {
+                return new Promise(resolve => {
+                    const duration = 600;
+                    const startTime = performance.now();
+
+                    // 각 노드의 초기 상태 설정 (가시성 확보)
+                    nodes.forEach(node => {
+                        node.depthRevealProgress = 0;
+                        node.depthRevealActive = true;
+                        node.animationVisible = true; // 명시적 가시성 설정
+                    });
+
+                    const animate = (currentTime) => {
+                        const elapsed = currentTime - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        const easeProgress = 1 - Math.pow(1 - progress, 3);
+
+                        nodes.forEach((node, index) => {
+                            // 순차적 등장 (스태거링)
+                            const staggerDelay = index * 0.1;
+                            const nodeProgress = Math.max(0, Math.min(1, (progress - staggerDelay) / (1 - staggerDelay)));
+
+                            node.depthRevealProgress = nodeProgress;
+
+                            // 크기 애니메이션 (최소 크기 보장)
+                            const targetSize = node.size;
+                            node.currentSize = Math.max(5, targetSize * nodeProgress);
+
+                            // 알파 애니메이션 (최소 알파값 보장)
+                            node.alpha = Math.max(0.3, nodeProgress);
+
+                            // 가시성 항상 유지
+                            node.animationVisible = true;
+                        });
+
+                        this.renderer.render();
+
+                        if (progress < 1) {
+                            requestAnimationFrame(animate);
+                        } else {
+                            // 애니메이션 완료 후 정리 (가시성 완전 복구)
+                            nodes.forEach(node => {
+                                node.depthRevealActive = false;
+                                node.depthRevealProgress = 1;
+                                node.alpha = 1;
+                                node.currentSize = node.size;
+                                node.animationVisible = true; // 명시적 가시성 보장
+                            });
+                            resolve();
+                        }
+                    };
+
+                    requestAnimationFrame(animate);
+                });
+            }
+
+            // 기존 startDemo와 호환성을 위한 래퍼
+            async triggerDepthRecalculationAnimation(newRootNode) {
+                await this.animateDepthRecalculation(newRootNode);
+            }
+        }
+
+        // 메인 애플리케이션
+        class PTCompensationWiki {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.eventBus = new EventBus();
+                this.renderer = new SimpleGraphRenderer(canvas, this.eventBus);
+                this.animator = new Enhanced5WhyAnimator(this.renderer, this.eventBus);
+
+                this.createUI();
+                this.loadDummyData();
+            }
+
+            createUI() {
+                // 메인 컨트롤 패널
+                const controlPanel = document.createElement('div');
+                controlPanel.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    left: 20px;
+                    background: white;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    padding: 15px;
+                    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                    z-index: 1000;
+                `;
+
+                controlPanel.innerHTML = `
+                    <h3 style="margin: 0 0 15px 0;">🏥 PT 보상작용 위키</h3>
+
+                    <div class="control-section">
+                        <button id="start-demo-btn" class="main-button primary">
+                            🎬 5Why 애니메이션
+                        </button>
+                        <button id="toggle-physics-btn" class="main-button primary">
+                            ⚡ 물리엔진: ON
+                        </button>
+                    </div>
+
+                    <div class="control-section">
+                        <button id="toggle-physics-panel" class="main-button" style="width: 100%; text-align: left;">
+                            ⚙️ 물리 엔진 설정 ▼
+                        </button>
+                        <div id="physics-controls" style="display: none; margin-top: 10px;">
+                            <label style="display: block; margin-bottom: 3px; font-size: 12px; color: #666;">
+                                🎯 중심 힘 (Center Force)
+                            </label>
+                            <input type="range" id="center-force-slider" min="0" max="0.01" step="0.0005" value="0.002"
+                                   style="width: 100%; margin-bottom: 3px;">
+                            <div style="text-align: center; font-size: 10px; color: #999; margin-bottom: 8px;" id="center-force-value">0.002</div>
+
+                            <label style="display: block; margin-bottom: 3px; font-size: 12px; color: #666;">
+                                💥 반발력 (Repulsion)
+                            </label>
+                            <input type="range" id="repulsion-slider" min="1000" max="20000" step="500" value="5000"
+                                   style="width: 100%; margin-bottom: 3px;">
+                            <div style="text-align: center; font-size: 10px; color: #999; margin-bottom: 8px;" id="repulsion-value">5000</div>
+
+                            <label style="display: block; margin-bottom: 3px; font-size: 12px; color: #666;">
+                                🔗 링크 인력 (Link Force)
+                            </label>
+                            <input type="range" id="attraction-slider" min="0.001" max="0.1" step="0.005" value="0.01"
+                                   style="width: 100%; margin-bottom: 3px;">
+                            <div style="text-align: center; font-size: 10px; color: #999; margin-bottom: 8px;" id="attraction-value">0.01</div>
+
+                            <label style="display: block; margin-bottom: 3px; font-size: 12px; color: #666;">
+                                🌊 감쇠 (Damping)
+                            </label>
+                            <input type="range" id="damping-slider" min="0.7" max="0.99" step="0.01" value="0.9"
+                                   style="width: 100%; margin-bottom: 3px;">
+                            <div style="text-align: center; font-size: 10px; color: #999; margin-bottom: 10px;" id="damping-value">0.90</div>
+
+                            <div style="display: flex; gap: 5px; margin-top: 8px;">
+                                <button id="preset-loose" class="main-button" style="flex: 1; font-size: 11px; padding: 6px;">느슨</button>
+                                <button id="preset-normal" class="main-button" style="flex: 1; font-size: 11px; padding: 6px;">보통</button>
+                                <button id="preset-tight" class="main-button" style="flex: 1; font-size: 11px; padding: 6px;">단단</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <label style="display: block; margin-bottom: 5px; font-size: 13px; color: #666;">
+                            📝 글자 크기
+                        </label>
+                        <input type="range" id="text-scale-slider" min="0.5" max="2" step="0.1" value="1"
+                               style="width: 100%; margin-bottom: 5px;">
+                        <div style="text-align: center; font-size: 11px; color: #999;" id="text-scale-value">100%</div>
+                    </div>
+
+                    <div class="control-section">
+                        <button id="reset-btn" class="main-button">🔄 리셋</button>
+                    </div>
+                `;
+
+                controlPanel.querySelector('#start-demo-btn').onclick = () => {
+                    this.animator.startDemo();
+                };
+
+                controlPanel.querySelector('#toggle-physics-btn').onclick = () => {
+                    this.renderer.physics.enabled = !this.renderer.physics.enabled;
+                    const btn = controlPanel.querySelector('#toggle-physics-btn');
+                    btn.textContent = this.renderer.physics.enabled ? '⚡ 물리엔진: ON' : '⚡ 물리엔진: OFF';
+                    btn.classList.toggle('primary', this.renderer.physics.enabled);
+                };
+
+                controlPanel.querySelector('#reset-btn').onclick = () => {
+                    this.loadDummyData();
+                };
+
+                // 글자 크기 조절
+                const textScaleSlider = controlPanel.querySelector('#text-scale-slider');
+                const textScaleValue = controlPanel.querySelector('#text-scale-value');
+                textScaleSlider.oninput = (e) => {
+                    const scale = parseFloat(e.target.value);
+                    this.renderer.textScale = scale;
+                    textScaleValue.textContent = Math.round(scale * 100) + '%';
+                    this.renderer.render();
+                };
+
+                // 물리 엔진 설정 패널 토글
+                const physicsPanel = controlPanel.querySelector('#physics-controls');
+                const togglePhysicsPanelBtn = controlPanel.querySelector('#toggle-physics-panel');
+                togglePhysicsPanelBtn.onclick = () => {
+                    const isVisible = physicsPanel.style.display !== 'none';
+                    physicsPanel.style.display = isVisible ? 'none' : 'block';
+                    togglePhysicsPanelBtn.innerHTML = isVisible ? '⚙️ 물리 엔진 설정 ▼' : '⚙️ 물리 엔진 설정 ▲';
+                };
+
+                // 중심 힘 조절
+                const centerForceSlider = controlPanel.querySelector('#center-force-slider');
+                const centerForceValue = controlPanel.querySelector('#center-force-value');
+                centerForceSlider.oninput = (e) => {
+                    const value = parseFloat(e.target.value);
+                    this.renderer.physics.centerPull = value;
+                    centerForceValue.textContent = value.toFixed(4);
+                };
+
+                // 반발력 조절
+                const repulsionSlider = controlPanel.querySelector('#repulsion-slider');
+                const repulsionValue = controlPanel.querySelector('#repulsion-value');
+                repulsionSlider.oninput = (e) => {
+                    const value = parseFloat(e.target.value);
+                    this.renderer.physics.repulsion = value;
+                    repulsionValue.textContent = value.toString();
+                };
+
+                // 링크 인력 조절
+                const attractionSlider = controlPanel.querySelector('#attraction-slider');
+                const attractionValue = controlPanel.querySelector('#attraction-value');
+                attractionSlider.oninput = (e) => {
+                    const value = parseFloat(e.target.value);
+                    this.renderer.physics.attraction = value;
+                    attractionValue.textContent = value.toFixed(3);
+                };
+
+                // 감쇠 조절
+                const dampingSlider = controlPanel.querySelector('#damping-slider');
+                const dampingValue = controlPanel.querySelector('#damping-value');
+                dampingSlider.oninput = (e) => {
+                    const value = parseFloat(e.target.value);
+                    this.renderer.physics.damping = value;
+                    dampingValue.textContent = value.toFixed(2);
+                };
+
+                // 프리셋 버튼
+                const applyPreset = (preset) => {
+                    let centerPull, repulsion, attraction, damping;
+
+                    switch(preset) {
+                        case 'loose':
+                            centerPull = 0.001;
+                            repulsion = 8000;
+                            attraction = 0.005;
+                            damping = 0.85;
+                            break;
+                        case 'normal':
+                            centerPull = 0.002;
+                            repulsion = 5000;
+                            attraction = 0.01;
+                            damping = 0.9;
+                            break;
+                        case 'tight':
+                            centerPull = 0.005;
+                            repulsion = 3000;
+                            attraction = 0.03;
+                            damping = 0.95;
+                            break;
+                    }
+
+                    this.renderer.physics.centerPull = centerPull;
+                    this.renderer.physics.repulsion = repulsion;
+                    this.renderer.physics.attraction = attraction;
+                    this.renderer.physics.damping = damping;
+
+                    centerForceSlider.value = centerPull;
+                    centerForceValue.textContent = centerPull.toFixed(4);
+                    repulsionSlider.value = repulsion;
+                    repulsionValue.textContent = repulsion.toString();
+                    attractionSlider.value = attraction;
+                    attractionValue.textContent = attraction.toFixed(3);
+                    dampingSlider.value = damping;
+                    dampingValue.textContent = damping.toFixed(2);
+                };
+
+                controlPanel.querySelector('#preset-loose').onclick = () => applyPreset('loose');
+                controlPanel.querySelector('#preset-normal').onclick = () => applyPreset('normal');
+                controlPanel.querySelector('#preset-tight').onclick = () => applyPreset('tight');
+
+                document.body.appendChild(controlPanel);
+
+                // 상태 패널
+                const statusPanel = document.createElement('div');
+                statusPanel.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    left: 20px;
+                    background: rgba(0,0,0,0.8);
+                    color: white;
+                    padding: 10px 15px;
+                    border-radius: 5px;
+                    font-family: monospace;
+                    font-size: 12px;
+                    z-index: 1000;
+                `;
+                statusPanel.innerHTML = `
+                    📊 노드: 5 | 엣지: 4<br>
+                    🎬 애니메이션: 준비완료<br>
+                    🚀 상태: 데모 실행 가능
+                `;
+                document.body.appendChild(statusPanel);
+            }
+
+            async loadDummyData() {
+                try {
+                    // graph.json이 있으면 로드, 없으면 더미 데이터 사용
+                    let graphData;
+
+                    try {
+                        const response = await fetch('graph.json');
+                        if (response.ok) {
+                            graphData = await response.json();
+                            console.log('📡 Loaded graph.json from bot');
+                        } else {
+                            throw new Error('graph.json not found');
+                        }
+                    } catch (fetchError) {
+                        console.log('📋 Using dummy data');
+                        graphData = JSON.parse(
+                            document.getElementById('dummy-graph-data').textContent
+                        );
+                    }
+
+                    // 모든 요소 다시 보이게 설정
+                    if (graphData.nodes) {
+                        // 최신 노드 찾기 (metadata.created_at 또는 ID 기준)
+                        const sortedNodes = [...graphData.nodes].sort((a, b) => {
+                            const timeA = a.metadata?.created_at || a.id;
+                            const timeB = b.metadata?.created_at || b.id;
+                            return String(timeB).localeCompare(String(timeA));
+                        });
+
+                        // 하늘색~파란색 그라데이션 색상 팔레트
+                        const skyBlueColors = [
+                            '#0EA5E9', // 진한 스카이블루
+                            '#38BDF8', // 밝은 스카이블루
+                            '#60A5FA', // 밝은 블루
+                            '#7DD3FC', // 연한 스카이블루
+                            '#BAE6FD', // 아주 연한 스카이블루
+                            '#E0F2FE'  // 거의 흰색에 가까운 하늘색
+                        ];
+
+                        // 각 노드에 색상 할당 (최신 -> 오래된 순)
+                        graphData.nodes.forEach((node, index) => {
+                            node.animationVisible = true;
+
+                            // 노드의 나이 계산 (0=최신, 1=가장 오래됨)
+                            const nodeIndex = sortedNodes.findIndex(n => n.id === node.id);
+                            const ageRatio = sortedNodes.length > 1
+                                ? nodeIndex / (sortedNodes.length - 1)
+                                : 0;
+
+                            // 색상 인덱스 계산 (0=진한색, 5=연한색)
+                            const colorIndex = Math.floor(ageRatio * (skyBlueColors.length - 1));
+                            node.color = skyBlueColors[colorIndex];
+
+                            // 상위 20% 또는 최대 5개를 최신 노드로 표시
+                            const recentCount = Math.min(Math.ceil(sortedNodes.length * 0.2), 5);
+                            if (nodeIndex < recentCount) {
+                                node.isRecent = true;
+                            }
+                        });
+                    }
+                    if (graphData.edges) {
+                        graphData.edges.forEach(edge => {
+                            edge.animationVisible = true;
+                        });
+                    }
+
+                    this.renderer.updateGraph(graphData);
+                    console.log(`✅ Graph loaded: ${graphData.nodes?.length || 0} nodes, ${graphData.edges?.length || 0} edges`);
+                } catch (error) {
+                    console.error('Failed to load graph data:', error);
+                }
+            }
+        }
+
+        // 애플리케이션 초기화
+        function initializeApp() {
+            try {
+                console.log('🔧 Initializing PT Compensation Wiki (Standalone)...');
+
+                const canvas = document.getElementById('main-canvas');
+                if (!canvas) {
+                    throw new Error('Canvas element not found');
+                }
+
+                const app = new PTCompensationWiki(canvas);
+                window.ptWiki = app;
+
+                // 로딩 화면 숨기기
+                setTimeout(() => {
+                    document.getElementById('loading-screen').style.display = 'none';
+                    console.log('🎉 PT Compensation Wiki initialized successfully!');
+                    console.log('💡 Enhanced 5Why animation system ready - click "데모 시작" to experience the improved flowchart visualization!');
+                }, 300);
+
+            } catch (error) {
+                console.error('Failed to initialize application:', error);
+                alert('애플리케이션 초기화에 실패했습니다: ' + error.message);
+            }
+        }
+
+        // DOM 로딩 완료 후 초기화
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeApp);
+        } else {
+            initializeApp();
+        }
+
+        console.log('📜 Script loaded successfully');
+    </script>
+
+    <!-- 노드 정보 사이드패널 -->
+    <div id="node-info-panel" class="node-info-panel">
+        <div class="panel-header">
+            <h3 id="panel-title">노드 정보</h3>
+            <button id="panel-close-btn" class="panel-close-btn">✕</button>
+        </div>
+        <div class="panel-content">
+            <div class="node-basic-info">
+                <div class="node-icon"></div>
+                <div class="node-details">
+                    <h4 id="node-label">-</h4>
+                    <p id="node-type">-</p>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h5>📋 설명</h5>
+                <p id="node-description">-</p>
+            </div>
+
+            <div class="info-section">
+                <h5>📊 발생률</h5>
+                <p id="node-prevalence">-</p>
+            </div>
+
+            <div class="info-section">
+                <h5>🔬 평가 도구</h5>
+                <ul id="node-assessment-tools"></ul>
+            </div>
+
+            <div class="info-section">
+                <h5>📚 과학적 근거</h5>
+                <p id="node-evidence">-</p>
+            </div>
+
+            <div class="info-section">
+                <h5>⚡ 중재 방법</h5>
+                <ul id="node-interventions"></ul>
+            </div>
+
+            <div class="info-section">
+                <h5>🔗 관련 질환</h5>
+                <ul id="node-related-conditions"></ul>
+            </div>
+
+            <div class="info-section">
+                <h5>📖 참고문헌</h5>
+                <ul id="node-references"></ul>
+            </div>
+
+            <div class="why-analysis-section">
+                <h5>🔍 Why 분석</h5>
+                <button id="set-as-why0-btn" class="analysis-btn">
+                    이 노드를 시작점으로 설정
+                </button>
+                <p class="analysis-hint">
+                    이 노드를 새로운 Why0 지점으로 설정하여 깊이 있는 원인 분석을 시작할 수 있습니다.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* 노드 정보 사이드패널 스타일 */
+        .node-info-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 380px;
+            height: 100vh;
+            background: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+            z-index: 2000;
+            transition: right 0.3s ease-in-out;
+            overflow-y: auto;
+            border-left: 3px solid #2196f3;
+        }
+
+        .node-info-panel.open {
+            right: 0;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .panel-header h3 {
+            margin: 0;
+            color: #2196f3;
+            font-size: 18px;
+        }
+
+        .panel-close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #666;
+            padding: 5px;
+            border-radius: 3px;
+            transition: background 0.2s;
+        }
+
+        .panel-close-btn:hover {
+            background: #e9ecef;
+        }
+
+        .panel-content {
+            padding: 20px;
+        }
+
+        .node-basic-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .node-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            background: #2196f3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .node-details h4 {
+            margin: 0 0 5px 0;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .node-details p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .info-section {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .info-section:last-of-type {
+            border-bottom: none;
+        }
+
+        .info-section h5 {
+            margin: 0 0 10px 0;
+            color: #2196f3;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .info-section p {
+            margin: 0;
+            color: #333;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .info-section ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #333;
+        }
+
+        .info-section li {
+            margin-bottom: 5px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .why-analysis-section {
+            margin-top: 25px;
+            padding: 20px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            border: 1px solid #bbdefb;
+        }
+
+        .why-analysis-section h5 {
+            margin: 0 0 15px 0;
+            color: #1976d2;
+            font-size: 15px;
+        }
+
+        .analysis-btn {
+            width: 100%;
+            padding: 12px;
+            background: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 10px;
+        }
+
+        .analysis-btn:hover {
+            background: #1976d2;
+        }
+
+        .analysis-hint {
+            margin: 0;
+            font-size: 12px;
+            color: #1976d2;
+            line-height: 1.4;
+        }
+
+        /* 캔버스 공간 조정 (패널 열릴 때) */
+        body.panel-open #main-canvas {
+            width: calc(100vw - 380px);
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 1200px) {
+            .node-info-panel {
+                width: 320px;
+                right: -320px;
+            }
+
+            body.panel-open #main-canvas {
+                width: calc(100vw - 320px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .node-info-panel {
+                width: 100vw;
+                right: -100vw;
+            }
+
+            body.panel-open #main-canvas {
+                display: none;
+            }
+        }
+    </style>
+</body>
+</html>
