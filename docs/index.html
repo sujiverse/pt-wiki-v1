@@ -1093,18 +1093,52 @@
                 });
 
                 let isDragging = false;
+                let draggedNode = null;
                 let lastX, lastY;
                 let dragDistance = 0;
 
                 this.canvas.addEventListener('mousedown', (e) => {
-                    isDragging = true;
+                    const rect = this.canvas.getBoundingClientRect();
+                    const mouseX = e.clientX - rect.left;
+                    const mouseY = e.clientY - rect.top;
+
+                    // 노드 클릭 체크
+                    const clickedNode = this.findNodeAtPosition(mouseX, mouseY);
+
+                    if (clickedNode) {
+                        // 노드 드래그 시작
+                        draggedNode = clickedNode;
+                        draggedNode.isDragging = true;
+                    } else {
+                        // 캔버스 드래그 시작
+                        isDragging = true;
+                    }
+
                     lastX = e.clientX;
                     lastY = e.clientY;
                     dragDistance = 0;
                 });
 
                 this.canvas.addEventListener('mousemove', (e) => {
-                    if (isDragging) {
+                    const rect = this.canvas.getBoundingClientRect();
+                    const mouseX = e.clientX - rect.left;
+                    const mouseY = e.clientY - rect.top;
+
+                    if (draggedNode) {
+                        // 노드 드래그 중
+                        const deltaX = e.clientX - lastX;
+                        const deltaY = e.clientY - lastY;
+                        dragDistance += Math.abs(deltaX) + Math.abs(deltaY);
+
+                        draggedNode.x += deltaX / this.viewport.zoom;
+                        draggedNode.y += deltaY / this.viewport.zoom;
+
+                        lastX = e.clientX;
+                        lastY = e.clientY;
+                        this.canvas.style.cursor = 'grabbing';
+                        this.render();
+                    } else if (isDragging) {
+                        // 캔버스 드래그 중
                         const deltaX = e.clientX - lastX;
                         const deltaY = e.clientY - lastY;
                         dragDistance += Math.abs(deltaX) + Math.abs(deltaY);
@@ -1115,10 +1149,7 @@
                         lastY = e.clientY;
                         this.render();
                     } else {
-                        const rect = this.canvas.getBoundingClientRect();
-                        const mouseX = e.clientX - rect.left;
-                        const mouseY = e.clientY - rect.top;
-
+                        // 호버 상태
                         // +버튼 영역 체크
                         const isOverButton = this.addButtonArea &&
                             Math.sqrt(
@@ -1126,12 +1157,17 @@
                                 Math.pow(mouseY - (this.addButtonArea.y + this.addButtonArea.size/2), 2)
                             ) <= this.addButtonArea.size / 2;
 
+                        // 엣지 호버 체크
+                        this.hoveredEdge = this.findEdgeAtPosition(mouseX, mouseY);
+
                         // +버튼 위에 있거나 노드 위에 있으면 hoveredNode 유지
                         if (!isOverButton) {
                             const newHoveredNode = this.findNodeAtPosition(mouseX, mouseY);
                             if (newHoveredNode || !this.hoveredNode) {
                                 this.hoveredNode = newHoveredNode;
                             }
+                            // 노드 위에서 커서 변경
+                            this.canvas.style.cursor = newHoveredNode ? 'grab' : 'default';
                         }
 
                         this.mouseX = mouseX;
@@ -1141,10 +1177,19 @@
                 });
 
                 this.canvas.addEventListener('mouseup', (e) => {
-                    if (isDragging && dragDistance < 5) {
+                    if (draggedNode) {
+                        draggedNode.isDragging = false;
+                        if (dragDistance < 5) {
+                            // 드래그가 아닌 클릭으로 판단
+                            this.handleCanvasClick(e);
+                        }
+                        draggedNode = null;
+                    } else if (isDragging && dragDistance < 5) {
                         // 드래그가 아닌 클릭으로 판단
                         this.handleCanvasClick(e);
                     }
+
+                    this.canvas.style.cursor = 'default';
                     isDragging = false;
                     dragDistance = 0;
                 });
@@ -1194,6 +1239,55 @@
 
                     if (distance <= size) {
                         return node;
+                    }
+                }
+                return null;
+            }
+
+            findEdgeAtPosition(screenX, screenY) {
+                const threshold = 10; // 10px 이내면 호버로 간주
+
+                for (const edge of this.graph.edges) {
+                    if (edge.animationVisible === false) continue;
+
+                    const sourceNode = this.graph.nodes.find(n => n.id === edge.source);
+                    const targetNode = this.graph.nodes.find(n => n.id === edge.target);
+                    if (!sourceNode || !targetNode) continue;
+
+                    const sourcePos = this.worldToScreen(sourceNode.x, sourceNode.y);
+                    const targetPos = this.worldToScreen(targetNode.x, targetNode.y);
+
+                    // 점-선분 거리 계산
+                    const A = screenX - sourcePos.x;
+                    const B = screenY - sourcePos.y;
+                    const C = targetPos.x - sourcePos.x;
+                    const D = targetPos.y - sourcePos.y;
+
+                    const dot = A * C + B * D;
+                    const lenSq = C * C + D * D;
+                    let param = -1;
+
+                    if (lenSq !== 0) param = dot / lenSq;
+
+                    let xx, yy;
+
+                    if (param < 0) {
+                        xx = sourcePos.x;
+                        yy = sourcePos.y;
+                    } else if (param > 1) {
+                        xx = targetPos.x;
+                        yy = targetPos.y;
+                    } else {
+                        xx = sourcePos.x + param * C;
+                        yy = sourcePos.y + param * D;
+                    }
+
+                    const dx = screenX - xx;
+                    const dy = screenY - yy;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance <= threshold) {
+                        return edge;
                     }
                 }
                 return null;
@@ -1550,11 +1644,13 @@
                     if (!node.vy) node.vy = 0;
                 });
 
-                // 1. 반발력 (모든 노드 쌍)
+                // 1. 반발력 (모든 노드 쌍, 드래그 중인 노드 제외)
                 for (let i = 0; i < nodes.length; i++) {
                     for (let j = i + 1; j < nodes.length; j++) {
                         const n1 = nodes[i];
                         const n2 = nodes[j];
+
+                        if (n1.isDragging || n2.isDragging) continue;
 
                         const dx = n2.x - n1.x;
                         const dy = n2.y - n1.y;
@@ -1571,13 +1667,15 @@
                     }
                 }
 
-                // 2. 인력 (연결된 노드)
+                // 2. 인력 (연결된 노드, 드래그 중인 노드 제외)
                 if (this.graph.edges) {
                     this.graph.edges.forEach(edge => {
                         const source = this.nodeMap.get(edge.source);
                         const target = this.nodeMap.get(edge.target);
 
                         if (source && target && source.animationVisible !== false && target.animationVisible !== false) {
+                            if (source.isDragging || target.isDragging) return;
+
                             const dx = target.x - source.x;
                             const dy = target.y - source.y;
                             const dist = Math.sqrt(dx * dx + dy * dy) || 1;
@@ -1594,14 +1692,18 @@
                     });
                 }
 
-                // 3. 중심으로 당기기
+                // 3. 중심으로 당기기 (드래그 중인 노드 제외)
                 nodes.forEach(node => {
+                    if (node.isDragging) return;
+
                     node.vx -= node.x * this.physics.centerPull;
                     node.vy -= node.y * this.physics.centerPull;
                 });
 
-                // 4. 위치 업데이트 및 감쇠
+                // 4. 위치 업데이트 및 감쇠 (드래그 중인 노드 제외)
                 nodes.forEach(node => {
+                    if (node.isDragging) return; // 드래그 중인 노드는 건너뛰기
+
                     node.vx *= this.physics.damping;
                     node.vy *= this.physics.damping;
                     node.x += node.vx;
@@ -1747,40 +1849,53 @@
                             }
                         }
 
-                        // 엣지 라벨 그리기 (선을 따라 회전)
+                        // 엣지 라벨 그리기 (가로 방향, 화살표 위)
                         if (edge.label && this.viewport.zoom > 0.3) {
                             const midX = (sourcePos.x + currentTargetX) / 2;
                             const midY = (sourcePos.y + currentTargetY) / 2;
 
-                            // 선의 각도 계산
-                            const textAngle = Math.atan2(currentTargetY - sourcePos.y, currentTargetX - sourcePos.x);
-
-                            // 텍스트가 거꾸로 되지 않도록 조정
-                            let displayAngle = textAngle;
-                            if (textAngle > Math.PI / 2 || textAngle < -Math.PI / 2) {
-                                displayAngle = textAngle + Math.PI;
-                            }
-
-                            this.ctx.save();
-                            this.ctx.translate(midX, midY);
-                            this.ctx.rotate(displayAngle);
-
-                            const edgeFontSize = (this.textScale || 1) * Math.max(10, 11 * this.viewport.zoom);
-                            this.ctx.font = `${edgeFontSize}px Arial`;
+                            const edgeFontSize = (this.textScale || 1) * Math.max(12, 14 * this.viewport.zoom);
+                            this.ctx.font = `bold ${edgeFontSize}px Arial`;
                             this.ctx.textAlign = 'center';
                             this.ctx.textBaseline = 'bottom';
 
-                            // 배경 박스
-                            const textWidth = this.ctx.measureText(edge.label).width;
-                            const padding = 4;
-                            this.ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-                            this.ctx.fillRect(-textWidth/2 - padding, -edgeFontSize - 2, textWidth + padding * 2, edgeFontSize + 4);
+                            // 4글자로 제한 (초과 시 3글자 + …)
+                            let displayLabel = edge.label;
+                            const isHovered = this.hoveredEdge && this.hoveredEdge.id === edge.id;
 
-                            // 라벨 텍스트
-                            this.ctx.fillStyle = '#2C3E50';
-                            this.ctx.fillText(edge.label, 0, -2);
+                            if (displayLabel.length > 4) {
+                                displayLabel = displayLabel.substring(0, 3) + '…';
+                            }
 
-                            this.ctx.restore();
+                            const textWidth = this.ctx.measureText(displayLabel).width;
+                            const padding = isHovered ? 12 : 8;
+                            const boxHeight = edgeFontSize + 6;
+
+                            // 화살표 위쪽에 배치 (10px 여백)
+                            const labelY = midY - 10;
+
+                            // 그림자 (호버 시 강조)
+                            this.ctx.shadowColor = isHovered ? 'rgba(33, 150, 243, 0.4)' : 'rgba(0, 0, 0, 0.3)';
+                            this.ctx.shadowBlur = isHovered ? 8 : 4;
+                            this.ctx.shadowOffsetY = 2;
+
+                            // 배경
+                            this.ctx.fillStyle = isHovered ? 'rgba(227, 242, 253, 1.0)' : 'rgba(255, 255, 255, 1.0)';
+                            this.ctx.fillRect(midX - textWidth/2 - padding, labelY - boxHeight, textWidth + padding * 2, boxHeight);
+
+                            // 테두리 (호버 시 강조)
+                            this.ctx.strokeStyle = isHovered ? '#2196f3' : '#e0e0e0';
+                            this.ctx.lineWidth = isHovered ? 2 : 1;
+                            this.ctx.strokeRect(midX - textWidth/2 - padding, labelY - boxHeight, textWidth + padding * 2, boxHeight);
+
+                            // 그림자 리셋
+                            this.ctx.shadowColor = 'transparent';
+                            this.ctx.shadowBlur = 0;
+                            this.ctx.shadowOffsetY = 0;
+
+                            // 라벨 텍스트 (가로)
+                            this.ctx.fillStyle = '#1a1a1a';
+                            this.ctx.fillText(displayLabel, midX, labelY);
                         }
 
                         this.ctx.globalAlpha = 1; // 알파 리셋
@@ -1811,6 +1926,34 @@
                         size *= pulseScale;
                     }
 
+                    // 노드 안에 라벨 표시 - 크기 계산 먼저
+                    const fontSize = (this.textScale || 1) * Math.max(10, 12 * this.viewport.zoom);
+                    this.ctx.font = `${fontSize}px Arial`;
+
+                    // 텍스트 줄바꿈 처리 (한국어 지원)
+                    const baseMaxWidth = size * 1.8;
+                    let lines = [];
+                    let currentLine = '';
+
+                    for (let i = 0; i < node.label.length; i++) {
+                        const char = node.label[i];
+                        const testLine = currentLine + char;
+                        const metrics = this.ctx.measureText(testLine);
+
+                        if (metrics.width > baseMaxWidth && currentLine !== '') {
+                            lines.push(currentLine);
+                            currentLine = char;
+                        } else {
+                            currentLine = testLine;
+                        }
+                    }
+                    if (currentLine) lines.push(currentLine);
+
+                    // 텍스트 길이에 따라 노드 크기 조정
+                    const maxLineWidth = Math.max(...lines.map(l => this.ctx.measureText(l).width));
+                    const requiredSize = Math.max(size, maxLineWidth / 1.6, lines.length * fontSize * 0.6);
+                    size = requiredSize;
+
                     // 노드 원
                     this.ctx.beginPath();
                     this.ctx.arc(pos.x, pos.y, size, 0, 2 * Math.PI);
@@ -1831,36 +1974,23 @@
                     this.ctx.fill();
                     this.ctx.stroke();
 
-                    // 노드 안에 라벨 표시
-                    const fontSize = (this.textScale || 1) * Math.max(10, 12 * this.viewport.zoom);
-                    this.ctx.font = `${fontSize}px Arial`;
+                    // 배경 밝기에 따라 텍스트 색상 자동 선택
+                    const hex = fillColor.replace('#', '');
+                    const r = parseInt(hex.substr(0, 2), 16);
+                    const g = parseInt(hex.substr(2, 2), 16);
+                    const b = parseInt(hex.substr(4, 2), 16);
+                    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+                    const textColor = brightness > 128 ? '#1a1a1a' : '#ffffff';
+
                     this.ctx.textAlign = 'center';
                     this.ctx.textBaseline = 'middle';
-
-                    // 텍스트 줄바꿈 처리
-                    const maxWidth = size * 1.8;
-                    const words = node.label.split(' ');
-                    let lines = [];
-                    let currentLine = '';
-
-                    for (const word of words) {
-                        const testLine = currentLine + (currentLine ? ' ' : '') + word;
-                        const metrics = this.ctx.measureText(testLine);
-                        if (metrics.width > maxWidth && currentLine !== '') {
-                            lines.push(currentLine);
-                            currentLine = word;
-                        } else {
-                            currentLine = testLine;
-                        }
-                    }
-                    if (currentLine) lines.push(currentLine);
 
                     // 줄 수에 따라 위치 조정
                     const lineHeight = fontSize * 1.2;
                     const totalHeight = lines.length * lineHeight;
                     const startY = pos.y - totalHeight / 2 + lineHeight / 2;
 
-                    this.ctx.fillStyle = '#FFFFFF';
+                    this.ctx.fillStyle = textColor;
                     lines.forEach((line, i) => {
                         this.ctx.fillText(line, pos.x, startY + i * lineHeight);
                     });
@@ -1957,6 +2087,82 @@
                     };
                 } else {
                     this.addButtonArea = null;
+                }
+
+                // 엣지 호버 툴팁 (말풍선 스타일)
+                if (this.hoveredEdge && this.hoveredEdge.label && this.mouseX && this.mouseY) {
+                    const edge = this.hoveredEdge;
+                    const padding = 16;
+                    const fontSize = 16;
+                    const lineHeight = 22;
+
+                    this.ctx.font = `${fontSize}px Arial`;
+
+                    // 텍스트 줄바꿈 (최대 너비 300px)
+                    const maxTooltipWidth = 300;
+                    let lines = [];
+                    let currentLine = '';
+
+                    for (let i = 0; i < edge.label.length; i++) {
+                        const char = edge.label[i];
+                        const testLine = currentLine + char;
+                        const metrics = this.ctx.measureText(testLine);
+
+                        if (metrics.width > maxTooltipWidth && currentLine !== '') {
+                            lines.push(currentLine);
+                            currentLine = char;
+                        } else {
+                            currentLine = testLine;
+                        }
+                    }
+                    if (currentLine) lines.push(currentLine);
+
+                    // 툴팁 크기 계산
+                    const tooltipWidth = Math.max(...lines.map(l => this.ctx.measureText(l).width)) + padding * 2;
+                    const tooltipHeight = lines.length * lineHeight + padding * 2;
+
+                    // 툴팁 위치 (마우스 오른쪽 아래, 화면 밖으로 나가지 않게)
+                    let tooltipX = this.mouseX + 15;
+                    let tooltipY = this.mouseY + 15;
+
+                    if (tooltipX + tooltipWidth > this.canvas.width) {
+                        tooltipX = this.mouseX - tooltipWidth - 15;
+                    }
+                    if (tooltipY + tooltipHeight > this.canvas.height) {
+                        tooltipY = this.mouseY - tooltipHeight - 15;
+                    }
+
+                    // 그림자
+                    this.ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+                    this.ctx.shadowBlur = 12;
+                    this.ctx.shadowOffsetX = 0;
+                    this.ctx.shadowOffsetY = 4;
+
+                    // 배경 (말풍선)
+                    this.ctx.fillStyle = '#ffffff';
+                    this.ctx.beginPath();
+                    this.ctx.roundRect(tooltipX, tooltipY, tooltipWidth, tooltipHeight, 8);
+                    this.ctx.fill();
+
+                    // 테두리
+                    this.ctx.strokeStyle = '#2196f3';
+                    this.ctx.lineWidth = 2;
+                    this.ctx.stroke();
+
+                    // 그림자 리셋
+                    this.ctx.shadowColor = 'transparent';
+                    this.ctx.shadowBlur = 0;
+                    this.ctx.shadowOffsetX = 0;
+                    this.ctx.shadowOffsetY = 0;
+
+                    // 텍스트
+                    this.ctx.fillStyle = '#1a1a1a';
+                    this.ctx.textAlign = 'left';
+                    this.ctx.textBaseline = 'top';
+
+                    lines.forEach((line, i) => {
+                        this.ctx.fillText(line, tooltipX + padding, tooltipY + padding + i * lineHeight);
+                    });
                 }
 
                 const perfEnd = performance.now();
