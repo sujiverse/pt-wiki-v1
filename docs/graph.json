@@ -1,0 +1,15 @@
+{
+  "nodes": [
+    {
+      "id": "calf-pain",
+      "label": "종아리 통증",
+      "type": "symptom",
+      "x": 0,
+      "y": 0,
+      "size": 35,
+      "importance": 1.0,
+      "color": "#f44336"
+    }
+  ],
+  "edges": []
+}
