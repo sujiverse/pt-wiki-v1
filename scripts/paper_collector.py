@@ -166,16 +166,16 @@ def main():
 
             node = extract_clinical_info(paper)
             if add_paper_to_graph(graph, node):
-                print(f"  ✅ Added: {node['label']} (PMID: {pmid})")
+                print(f"  [+] Added: {node['label']} (PMID: {pmid})")
                 added_count += 1
             else:
-                print(f"  ⏭️  Skipped: already exists (PMID: {pmid})")
+                print(f"  [-] Skipped: already exists (PMID: {pmid})")
 
     if added_count > 0:
         save_graph(graph)
-        print(f"\n✅ Total added: {added_count} papers")
+        print(f"\n[OK] Total added: {added_count} papers")
     else:
-        print("\nℹ️  No new papers added")
+        print("\n[INFO] No new papers added")
 
 if __name__ == '__main__':
     main()

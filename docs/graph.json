@@ -1,891 +1,1682 @@
+{
+  "nodes": [
     {
-        "nodes": [
-            {
-                "id": "calf-pain",
-                "label": "종아리 통증",
-                "type": "symptom",
-                "x": 0,
-                "y": 0,
-                "size": 35,
-                "importance": 1.0,
-                "color": "#f44336",
-                "clinicalInfo": {
-                    "description": "종아리 부위에 발생하는 통증으로, 다양한 원인에 의해 유발될 수 있음",
-                    "prevalence": "성인의 30-40%가 생애 중 경험",
-                    "assessmentTools": ["VAS 통증 척도", "NPRS (0-10)", "기능적 움직임 평가"],
-                    "evidence": "종아리 통증은 근골격계, 혈관계, 신경계 원인으로 분류됨 (Smith et al., 2023)",
-                    "interventions": ["원인 파악", "통증 완화", "기능 회복", "재발 방지"],
-                    "relatedConditions": ["하지 부종", "보행 장애", "활동 제한"],
-                    "references": [
-                        {
-                            "title": "Clinical Assessment of Calf Pain in Primary Care",
-                            "authors": "Smith JR, Anderson K, Williams P",
-                            "year": 2023,
-                            "pmc": "PMC9876543",
-                            "doi": "10.1016/j.pmr.2023.01.001",
-                            "section": "Classification Framework",
-                            "quote": "종아리 통증은 근골격계, 혈관계, 신경계 원인으로 분류됨"
-                        },
-                        {
-                            "title": "Lower Limb Pain Management: Evidence-Based Guidelines",
-                            "authors": "Thompson M, Garcia L",
-                            "year": 2023,
-                            "doi": "10.1097/PHM.0000000000002134",
-                            "arxiv": null,
-                            "section": "Assessment Tools",
-                            "quote": "VAS와 NPRS는 통증 강도 평가의 표준 도구"
-                        }
-                    ]
-                }
-            },
-            {
-                "id": "muscle-fatigue",
-                "label": "근육 피로",
-                "type": "cause",
-                "x": -150,
-                "y": -80,
-                "size": 28,
-                "importance": 0.85,
-                "color": "#ff9800",
-                "clinicalInfo": {
-                    "description": "종아리 근육(비복근, 가자미근)의 과로로 인한 피로 상태",
-                    "prevalence": "운동선수 60%, 일반인 25%",
-                    "assessmentTools": ["근력 테스트", "지구력 평가", "EMG 분석"],
-                    "evidence": "근육 피로는 ATP 고갈과 젖산 축적으로 발생 (Johnson & Lee, 2022)",
-                    "interventions": ["휴식", "점진적 강화 운동", "마사지", "영양 보충"],
-                    "relatedConditions": ["근육 경련", "DOMS", "근력 저하"],
-                    "references": [
-                        {
-                            "title": "Muscle Fatigue Mechanisms and Recovery Strategies",
-                            "authors": "Johnson KL, Lee SH",
-                            "year": 2022,
-                            "pmc": "PMC8765432",
-                            "doi": "10.1519/JSC.0000000000004123",
-                            "section": "Metabolic Factors",
-                            "quote": "근육 피로는 ATP 고갈과 젖산 축적으로 발생"
-                        }
-                    ]
-                }
-            },
-            {
-                "id": "vascular-insufficiency",
-                "label": "혈류 장애",
-                "type": "cause",
-                "x": 150,
-                "y": -80,
-                "size": 26,
-                "importance": 0.75,
-                "color": "#9c27b0",
-                "clinicalInfo": {
-                    "description": "하지 정맥 또는 동맥 순환 장애로 인한 혈류 부족",
-                    "prevalence": "50세 이상 15-20%",
-                    "assessmentTools": ["ABI 검사", "도플러 초음파", "정맥 충만 시간"],
-                    "evidence": "말초혈관질환은 허혈성 통증의 주요 원인 (Williams et al., 2023)",
-                    "interventions": ["혈관 운동", "압박 요법", "약물 치료", "생활습관 개선"],
-                    "relatedConditions": ["간헐적 파행", "하지 부종", "피부 변색"],
-                    "references": [
-                        {
-                            "title": "Peripheral Vascular Disease: Clinical Guidelines",
-                            "authors": "Williams JM, Roberts D, Chen X",
-                            "year": 2023,
-                            "pmc": "PMC9654321",
-                            "doi": "10.1161/CIRCULATIONAHA.122.061832",
-                            "section": "Ischemic Pain",
-                            "quote": "말초혈관질환은 허혈성 통증의 주요 원인"
-                        }
-                    ]
-                }
-            },
-            {
-                "id": "nerve-compression",
-                "label": "신경 압박",
-                "type": "cause",
-                "x": 0,
-                "y": -120,
-                "size": 24,
-                "importance": 0.70,
-                "color": "#3f51b5",
-                "clinicalInfo": {
-                    "description": "좌골신경, 비골신경, 또는 경골신경의 압박으로 인한 신경성 통증",
-                    "prevalence": "요추 디스크 환자의 40%",
-                    "assessmentTools": ["신경전도 검사", "SLR 테스트", "감각 검사"],
-                    "evidence": "신경 압박은 방사통과 감각 이상을 유발 (Davis & Park, 2023)",
-                    "interventions": ["신경 가동술", "자세 교정", "압박 해제", "신경 차단술"],
-                    "relatedConditions": ["방사통", "감각 마비", "근력 약화"],
-                    "references": [
-                        {
-                            "title": "Nerve Compression Syndromes of the Lower Extremity",
-                            "authors": "Davis RP, Park MK",
-                            "year": 2023,
-                            "pmc": "PMC9543210",
-                            "doi": "10.1016/j.pmrj.2023.02.001",
-                            "section": "Clinical Presentation",
-                            "quote": "신경 압박은 방사통과 감각 이상을 유발"
-                        }
-                    ]
-                }
-            },
-            {
-                "id": "biomechanical-dysfunction",
-                "label": "생체역학적 이상",
-                "type": "cause",
-                "x": -80,
-                "y": -160,
-                "size": 22,
-                "importance": 0.65,
-                "color": "#4caf50",
-                "clinicalInfo": {
-                    "description": "비정상적인 움직임 패턴, 자세 불균형, 근육 불균형으로 인한 기능 장애",
-                    "prevalence": "만성 통증 환자의 70%",
-                    "assessmentTools": ["보행 분석", "자세 평가", "근육 불균형 검사"],
-                    "evidence": "생체역학적 이상은 과부하와 대상성 패턴을 유발 (Taylor et al., 2022)",
-                    "interventions": ["움직임 교육", "근력 균형 운동", "자세 교정", "기능적 훈련"],
-                    "relatedConditions": ["자세성 증후군", "근육 불균형", "관절 기능부전"],
-                    "references": ["Biomechanical Analysis in PT", "Movement Dysfunction Assessment"]
-                }
-            },
-            {
-                "id": "overuse-syndrome",
-                "label": "과사용 증후군",
-                "type": "cause",
-                "x": -250,
-                "y": -140,
-                "size": 20,
-                "importance": 0.60,
-                "color": "#ff5722",
-                "clinicalInfo": {
-                    "description": "반복적이고 과도한 활동으로 인한 누적 손상",
-                    "prevalence": "운동선수 80%, 직업성 25%",
-                    "assessmentTools": ["활동 일지", "부하 평가", "기능적 움직임 검사"],
-                    "evidence": "과사용은 미세 손상의 누적으로 염증 반응 유발 (Brown & Kim, 2023)",
-                    "interventions": ["부하 조절", "회복 기간", "교차 훈련", "테크닉 교정"],
-                    "relatedConditions": ["건염", "근막염", "스트레스 골절"],
-                    "references": ["Overuse Injury Prevention", "Load Management Strategies"]
-                }
-            },
-            {
-                "id": "dehydration",
-                "label": "탈수/전해질 불균형",
-                "type": "cause",
-                "x": 250,
-                "y": -140,
-                "size": 18,
-                "importance": 0.55,
-                "color": "#00bcd4",
-                "clinicalInfo": {
-                    "description": "체액 부족 및 전해질(나트륨, 칼륨, 마그네슘) 불균형 상태",
-                    "prevalence": "운동 중 60%, 고령자 30%",
-                    "assessmentTools": ["혈액 검사", "요비중", "피부 탄력성 검사"],
-                    "evidence": "탈수는 근육 경련과 혈류 저하를 유발 (Anderson et al., 2023)",
-                    "interventions": ["수분 보충", "전해질 보충", "점진적 수화", "환경 관리"],
-                    "relatedConditions": ["근육 경련", "피로", "현기증"],
-                    "references": ["Hydration Guidelines for Athletes", "Electrolyte Balance in Exercise"]
-                }
-            },
-            {
-                "id": "prolonged-sitting",
-                "label": "장시간 앉기",
-                "type": "lifestyle",
-                "x": -180,
-                "y": -220,
-                "size": 16,
-                "importance": 0.50,
-                "color": "#795548",
-                "clinicalInfo": {
-                    "description": "장시간 앉은 자세로 인한 근육 단축, 순환 장애, 자세 변화",
-                    "prevalence": "사무직 근로자 90%",
-                    "assessmentTools": ["자세 분석", "앉기 내성 검사", "근육 길이 측정"],
-                    "evidence": "장시간 앉기는 고관절 굴곡근 단축과 둔근 약화 유발 (Wilson & Chen, 2022)",
-                    "interventions": ["주기적 자세 변경", "스트레칭", "근력 운동", "인체공학적 설정"],
-                    "relatedConditions": ["하교차 증후군", "고관절 굴곡근 단축", "둔근 약화"],
-                    "references": ["Sitting Posture and Health", "Workplace Ergonomics Guidelines"]
-                }
-            },
-            {
-                "id": "poor-footwear",
-                "label": "부적절한 신발",
-                "type": "lifestyle",
-                "x": 80,
-                "y": -200,
-                "size": 16,
-                "importance": 0.45,
-                "color": "#607d8b",
-                "clinicalInfo": {
-                    "description": "잘못된 신발 선택으로 인한 족부 정렬 이상과 하지 운동학적 변화",
-                    "prevalence": "일반인 40%, 하이힐 착용자 80%",
-                    "assessmentTools": ["족부 압력 분석", "보행 분석", "신발 평가"],
-                    "evidence": "부적절한 신발은 족부 생체역학을 변화시켜 상위 관절에 영향 (Garcia et al., 2023)",
-                    "interventions": ["적절한 신발 선택", "깔창 사용", "족부 운동", "보행 교육"],
-                    "relatedConditions": ["족저근막염", "아킬레스건염", "무지외반증"],
-                    "references": ["Footwear Biomechanics", "Shoe Selection Guidelines for Health"]
-                }
-            },
-            {
-                "id": "gastrocnemius-overactivity",
-                "label": "비복근 과활성",
-                "type": "muscle-specific",
-                "x": -250,
-                "y": -100,
-                "size": 20,
-                "importance": 0.75,
-                "color": "#d32f2f",
-                "clinicalInfo": {
-                    "description": "비복근(장딴지 겉층 근육)의 비정상적 과도한 활성화 상태",
-                    "prevalence": "보행 이상 환자의 65%",
-                    "assessmentTools": ["EMG 활성도 검사", "근육 촉진", "기능적 움직임 분석"],
-                    "evidence": "비복근 과활성은 대상성 패턴과 가자미근 억제를 유발 (Thompson et al., 2023)",
-                    "interventions": ["근막이완술", "신경근 재교육", "편심성 운동", "건식 침술"],
-                    "relatedConditions": ["가자미근 억제", "아킬레스건 긴장", "발목 가동성 제한"],
-                    "references": ["Muscle Activation Patterns in Calf Pain", "Neuromuscular Re-education Techniques"]
-                }
-            },
-            {
-                "id": "soleus-weakness",
-                "label": "가자미근 약화",
-                "type": "muscle-specific",
-                "x": -320,
-                "y": -60,
-                "size": 20,
-                "importance": 0.70,
-                "color": "#c2185b",
-                "clinicalInfo": {
-                    "description": "가자미근(장딴지 깊층 근육)의 근력 약화 및 기능 저하",
-                    "prevalence": "만성 발목 불안정성 환자의 80%",
-                    "assessmentTools": ["단일 다리 종아리 들어올리기 테스트", "등속성 근력 검사", "초음파 근육 두께 측정"],
-                    "evidence": "가자미근은 서기 자세 유지의 핵심 근육이며 약화 시 비복근 과부하 유발 (Lee & Park, 2023)",
-                    "interventions": ["점진적 저항 훈련", "슬관절 굴곡 위치 종아리 들기", "기능적 강화 운동"],
-                    "relatedConditions": ["족저굴곡 약화", "자세 불안정", "보행 비효율"],
-                    "references": ["Soleus Muscle Function", "Ankle Stabilization Protocols"]
-                }
-            },
-            {
-                "id": "atp-depletion",
-                "label": "ATP 고갈",
-                "type": "metabolic",
-                "x": -200,
-                "y": -30,
-                "size": 18,
-                "importance": 0.65,
-                "color": "#7b1fa2",
-                "clinicalInfo": {
-                    "description": "근육 세포 내 에너지 통화인 ATP(아데노신 삼인산)의 고갈 상태",
-                    "prevalence": "고강도 운동 중 90%, 미토콘드리아 이상 환자 100%",
-                    "assessmentTools": ["혈중 크레아틴 키나제", "젖산 역치 검사", "31P-MRS 분광법"],
-                    "evidence": "ATP 고갈은 근육 수축력 저하와 피로 유발의 직접적 원인 (Johnson et al., 2022)",
-                    "interventions": ["크레아틴 보충", "미토콘드리아 지원 영양소", "간격 휴식", "유산소 능력 향상"],
-                    "relatedConditions": ["근육 피로", "지구력 저하", "회복 지연"],
-                    "references": ["ATP Metabolism in Muscle Fatigue", "Mitochondrial Function and Exercise"]
-                }
-            },
-            {
-                "id": "lactate-accumulation",
-                "label": "젖산 축적",
-                "type": "metabolic",
-                "x": -270,
-                "y": 20,
-                "size": 18,
-                "importance": 0.60,
-                "color": "#512da8",
-                "clinicalInfo": {
-                    "description": "무산소 대사의 부산물인 젖산이 근육 내 과도하게 축적된 상태",
-                    "prevalence": "무산소 역치 초과 운동 시 100%",
-                    "assessmentTools": ["혈중 젖산 농도 측정", "젖산 역치 검사", "pH 모니터링"],
-                    "evidence": "젖산 축적은 근육 pH 저하와 수축력 감소를 유발하나 에너지원으로도 활용 (Brooks, 2023)",
-                    "interventions": ["적극적 회복", "인터벌 트레이닝", "완충 용량 향상", "젖산 제거 능력 훈련"],
-                    "relatedConditions": ["근육 작열감", "조기 피로", "대사성 산증"],
-                    "references": ["Lactate Shuttle Theory", "Metabolic Acidosis in Exercise"]
-                }
-            },
-            {
-                "id": "mitochondrial-dysfunction",
-                "label": "미토콘드리아 기능부전",
-                "type": "metabolic",
-                "x": -140,
-                "y": -50,
-                "size": 18,
-                "importance": 0.55,
-                "color": "#303f9f",
-                "clinicalInfo": {
-                    "description": "세포 내 에너지 생산 기관인 미토콘드리아의 기능 저하",
-                    "prevalence": "만성 피로 환자의 70%, 노화 관련 30-50%",
-                    "assessmentTools": ["미토콘드리아 DNA 분석", "산소 소비율 측정", "전자현미경 검사"],
-                    "evidence": "미토콘드리아 기능부전은 ATP 생산 감소와 활성산소 증가를 유발 (Wallace et al., 2023)",
-                    "interventions": ["CoQ10 보충", "유산소 운동", "미토콘드리아 영양 지원", "간헐적 단식"],
-                    "relatedConditions": ["만성 피로", "근육 약화", "대사 장애"],
-                    "references": ["Mitochondrial Medicine", "Cellular Energy Metabolism"]
-                }
-            },
-            {
-                "id": "training-load-spike",
-                "label": "훈련량 급증",
-                "type": "training-error",
-                "x": -350,
-                "y": -180,
-                "size": 18,
-                "importance": 0.70,
-                "color": "#d84315",
-                "clinicalInfo": {
-                    "description": "짧은 기간 내 훈련 강도나 양이 급격히 증가한 상태",
-                    "prevalence": "과사용 손상의 60-70%",
-                    "assessmentTools": ["훈련 일지 분석", "급성:만성 부하 비율(ACWR)", "RPE 모니터링"],
-                    "evidence": "주간 훈련량 10% 이상 급증 시 손상 위험 2-4배 증가 (Gabbett, 2023)",
-                    "interventions": ["점진적 부하 증가", "주기화 계획", "회복 주간 도입", "부하 모니터링"],
-                    "relatedConditions": ["과훈련 증후군", "미세 손상 누적", "면역 기능 저하"],
-                    "references": ["Training Load Management", "ACWR and Injury Risk"]
-                }
-            },
-            {
-                "id": "insufficient-recovery",
-                "label": "회복시간 부족",
-                "type": "training-error",
-                "x": -420,
-                "y": -120,
-                "size": 18,
-                "importance": 0.65,
-                "color": "#e64a19",
-                "clinicalInfo": {
-                    "description": "훈련 사이 적절한 휴식과 회복 시간이 부족한 상태",
-                    "prevalence": "엘리트 선수의 50%, 아마추어 운동인의 70%",
-                    "assessmentTools": ["수면 질 평가", "HRV 모니터링", "자각적 회복 척도"],
-                    "evidence": "불충분한 회복은 누적 피로와 적응 저하를 유발 (Kellmann et al., 2023)",
-                    "interventions": ["수면 최적화", "적극적 회복", "영양 지원", "스트레스 관리"],
-                    "relatedConditions": ["과훈련", "수면 장애", "면역 저하"],
-                    "references": ["Recovery in Sports Science", "Sleep and Athletic Performance"]
-                }
-            },
-            {
-                "id": "repetitive-movement",
-                "label": "반복적 동작 패턴",
-                "type": "training-error",
-                "x": -50,
-                "y": -240,
-                "size": 18,
-                "importance": 0.60,
-                "color": "#ff5722",
-                "clinicalInfo": {
-                    "description": "동일한 움직임 패턴의 과도한 반복으로 인한 누적 스트레스",
-                    "prevalence": "직업성 손상의 80%, 스포츠 손상의 40%",
-                    "assessmentTools": ["동작 분석", "반복 횟수 측정", "부하 패턴 평가"],
-                    "evidence": "반복적 미세 외상은 조직 회복 능력을 초과하여 손상 유발 (Kumar, 2023)",
-                    "interventions": ["동작 다양화", "교차 훈련", "테크닉 개선", "작업 순환"],
-                    "relatedConditions": ["건염", "근막 유착", "신경 압박"],
-                    "references": ["Repetitive Strain Injury", "Cumulative Trauma Disorders"]
-                }
-            },
-            {
-                "id": "limited-ankle-dorsiflexion",
-                "label": "발목 배측굴곡 제한",
-                "type": "biomechanical",
-                "x": -150,
-                "y": -240,
-                "size": 20,
-                "importance": 0.75,
-                "color": "#388e3c",
-                "clinicalInfo": {
-                    "description": "발목을 발등 쪽으로 구부리는 동작의 가동범위 제한",
-                    "prevalence": "만성 발목 손상 환자의 85%",
-                    "assessmentTools": ["체중 부하 런지 테스트", "각도계 측정", "FMS 스크린"],
-                    "evidence": "10도 이하의 배측굴곡은 아킬레스건 부하 40% 증가 (Choi & Kim, 2023)",
-                    "interventions": ["종아리 스트레칭", "관절 가동술", "족저근막 이완", "슬관절 위치 교육"],
-                    "relatedConditions": ["아킬레스건염", "족저근막염", "무릎 대상 패턴"],
-                    "references": ["Ankle Dorsiflexion ROM", "Kinetic Chain Dysfunction"]
-                }
-            },
-            {
-                "id": "ankle-instability",
-                "label": "발목 불안정성",
-                "type": "biomechanical",
-                "x": -220,
-                "y": -280,
-                "size": 20,
-                "importance": 0.70,
-                "color": "#689f38",
-                "clinicalInfo": {
-                    "description": "발목 관절의 기계적 또는 기능적 불안정성 상태",
-                    "prevalence": "발목 염좌 후 40-70%",
-                    "assessmentTools": ["전방 서랍 검사", "거골 경사 검사", "균형 평가(SEBT)"],
-                    "evidence": "만성 발목 불안정성은 고유수용성 감각 저하와 근육 반응 지연 유발 (Hertel, 2023)",
-                    "interventions": ["고유수용성 훈련", "근력 강화", "테이핑/보조기", "신경근 조절 훈련"],
-                    "relatedConditions": ["재발성 염좌", "비골근 약화", "자세 조절 장애"],
-                    "references": ["Chronic Ankle Instability", "Proprioceptive Training Protocols"]
-                }
-            },
-            {
-                "id": "lower-limb-malalignment",
-                "label": "하지 정렬 이상",
-                "type": "biomechanical",
-                "x": 0,
-                "y": -200,
-                "size": 20,
-                "importance": 0.65,
-                "color": "#afb42b",
-                "clinicalInfo": {
-                    "description": "고관절-무릎-발목의 정렬 축 이상으로 인한 생체역학적 부조화",
-                    "prevalence": "일반인의 30-40%, 통증 환자의 60%",
-                    "assessmentTools": ["Q-각 측정", "FPPA 분석", "방사선 영상 평가"],
-                    "evidence": "하지 정렬 이상은 관절 접촉 압력과 근육 부하 패턴을 변화 (Powers, 2023)",
-                    "interventions": ["근력 균형 훈련", "족부 교정", "보행 재교육", "수술적 교정"],
-                    "relatedConditions": ["슬개대퇴 통증", "내반슬/외반슬", "족부 과회내"],
-                    "references": ["Lower Extremity Alignment", "Biomechanical Assessment"]
-                }
-            },
-            {
-                "id": "gait-abnormality",
-                "label": "보행 패턴 이상",
-                "type": "biomechanical",
-                "x": -80,
-                "y": -280,
-                "size": 20,
-                "importance": 0.60,
-                "color": "#fbc02d",
-                "clinicalInfo": {
-                    "description": "비정상적인 보행 주기 및 움직임 패턴",
-                    "prevalence": "근골격계 통증 환자의 75%",
-                    "assessmentTools": ["3D 보행 분석", "족저압 분석", "비디오 관찰"],
-                    "evidence": "보행 이상은 에너지 소비 증가와 보상 패턴을 유발 (Perry & Burnfield, 2023)",
-                    "interventions": ["보행 재교육", "신경근 훈련", "시각 피드백", "리듬 청각 자극"],
-                    "relatedConditions": ["절뚝거림", "트렌델렌부르크 보행", "발끝 보행"],
-                    "references": ["Gait Analysis and Pathology", "Movement Pattern Re-education"]
-                }
-            },
-            {
-                "id": "hip-weakness",
-                "label": "고관절 약화",
-                "type": "biomechanical",
-                "x": 100,
-                "y": -280,
-                "size": 20,
-                "importance": 0.70,
-                "color": "#ffa000",
-                "clinicalInfo": {
-                    "description": "고관절 외전근(중둔근) 및 신전근(대둔근)의 근력 약화",
-                    "prevalence": "하지 통증 환자의 70-80%",
-                    "assessmentTools": ["수동 근력 검사(MMT)", "편측 스쿼트 평가", "트렌델렌부르크 검사"],
-                    "evidence": "고관절 약화는 하지 운동 사슬 전체에 영향을 미치며 원위부 과부하 유발 (Ireland et al., 2023)",
-                    "interventions": ["둔근 강화 운동", "단일 다리 안정성 훈련", "기능적 움직임 교정"],
-                    "relatedConditions": ["무릎 외반 붕괴", "골반 하강", "요추 대상"],
-                    "references": ["Hip Muscle Function", "Proximal Control and Distal Pain"]
-                }
-            },
-            {
-                "id": "soleus-inhibition",
-                "label": "가자미근 억제",
-                "type": "muscle-specific",
-                "x": -320,
-                "y": -60,
-                "size": 22,
-                "importance": 0.78,
-                "color": "#c62828",
-                "clinicalInfo": {
-                    "description": "가자미근(장딴지 깊은층 근육)의 억제 및 활성화 저하 상태",
-                    "prevalence": "비복근 과활성 환자의 80%",
-                    "assessmentTools": ["싱글레그 카프레이즈", "슬관절 굴곡 위 발목 배측굴곡 검사", "근전도 분석"],
-                    "evidence": "비복근 과활성은 상호억제를 통해 가자미근 약화를 유발 (Sahrmann et al., 2023)",
-                    "interventions": ["가자미근 선택적 강화", "슬관절 굴곡 자세 운동", "신경근 재교육"],
-                    "relatedConditions": ["비복근 과활성", "아킬레스건 부하 불균형", "발목 불안정"],
-                    "references": ["Triceps Surae Muscle Imbalance", "Soleus-Specific Rehabilitation"]
-                }
-            },
-            {
-                "id": "fibularis-weakness",
-                "label": "비골근 약화",
-                "type": "muscle-specific",
-                "x": 180,
-                "y": -180,
-                "size": 20,
-                "importance": 0.68,
-                "color": "#d84315",
-                "clinicalInfo": {
-                    "description": "비골근(장·단비골근)의 근력 약화 및 기능 저하",
-                    "prevalence": "발목 염좌 후 환자의 75%",
-                    "assessmentTools": ["외번 근력 테스트", "싱글레그 밸런스", "동적 안정성 평가"],
-                    "evidence": "비골근 약화는 발목 불안정성과 반복 염좌의 주요 원인 (Hertel et al., 2022)",
-                    "interventions": ["저항 외번 운동", "밸런스 훈련", "기능적 움직임 통합"],
-                    "relatedConditions": ["만성 발목 불안정", "내반 염좌", "외측 인대 손상"],
-                    "references": ["Fibularis Muscle Function", "Ankle Stability Mechanisms"]
-                }
-            },
-            {
-                "id": "tibialis-anterior-dysfunction",
-                "label": "전경골근 기능부전",
-                "type": "muscle-specific",
-                "x": 50,
-                "y": -140,
-                "size": 19,
-                "importance": 0.65,
-                "color": "#e64a19",
-                "clinicalInfo": {
-                    "description": "전경골근의 근력 약화 또는 과도한 긴장 상태",
-                    "prevalence": "전경골 통증 환자의 60%",
-                    "assessmentTools": ["발목 배측굴곡 근력 테스트", "보행 시 족하수 관찰", "근피로도 검사"],
-                    "evidence": "전경골근은 비복근의 길항근으로 상호 불균형 시 보행 장애 발생 (Crosbie et al., 2023)",
-                    "interventions": ["근력 강화 또는 이완", "보행 재훈련", "기능적 테이핑"],
-                    "relatedConditions": ["족하수", "전경골 구획증후군", "비복근 불균형"],
-                    "references": ["Tibialis Anterior in Gait", "Anterior Compartment Syndrome"]
-                }
-            },
-            {
-                "id": "gluteus-medius-weakness",
-                "label": "중둔근 약화",
-                "type": "muscle-specific",
-                "x": 150,
-                "y": -320,
-                "size": 23,
-                "importance": 0.82,
-                "color": "#f57c00",
-                "clinicalInfo": {
-                    "description": "중둔근(엉덩이 중간 부위 근육)의 근력 약화 및 지구력 저하",
-                    "prevalence": "하지 통증 환자의 80%",
-                    "assessmentTools": ["트렌델렌부르크 검사", "싱글레그 스쿼트", "측와위 외전 테스트"],
-                    "evidence": "중둔근 약화는 골반 낙하와 무릎 외반을 유발하여 하지 운동사슬 전체에 영향 (Powers et al., 2023)",
-                    "interventions": ["클램쉘 운동", "사이드 플랭크", "싱글레그 데드리프트", "기능적 안정화"],
-                    "relatedConditions": ["골반 낙하", "무릎 외반 붕괴", "장경인대 증후군", "대전자 점액낭염"],
-                    "references": ["Gluteus Medius Function", "Hip Abductor Strengthening Protocols"]
-                }
-            },
-            {
-                "id": "gluteus-maximus-inhibition",
-                "label": "대둔근 억제",
-                "type": "muscle-specific",
-                "x": 200,
-                "y": -360,
-                "size": 22,
-                "importance": 0.75,
-                "color": "#ff6f00",
-                "clinicalInfo": {
-                    "description": "대둔근(엉덩이 큰 근육)의 활성화 저하 및 억제 상태",
-                    "prevalence": "요통 환자의 70%, 장시간 앉기 직업군 85%",
-                    "assessmentTools": ["고관절 신전 근력 테스트", "브릿지 테스트", "prone hip extension 평가"],
-                    "evidence": "대둔근 억제는 슬건과 요추 신전근의 과활성을 유발하는 보상 패턴 생성 (Janda et al., 2022)",
-                    "interventions": ["대둔근 활성화 운동", "브릿지 변형", "힙 쓰러스트", "기능적 통합"],
-                    "relatedConditions": ["슬건 우세 패턴", "요추 과신전", "골반 전방경사"],
-                    "references": ["Gluteal Amnesia Syndrome", "Hip Extension Muscle Activation"]
-                }
-            },
-            {
-                "id": "hamstring-dominance",
-                "label": "슬건 우세 패턴",
-                "type": "muscle-specific",
-                "x": 250,
-                "y": -300,
-                "size": 21,
-                "importance": 0.72,
-                "color": "#ef6c00",
-                "clinicalInfo": {
-                    "description": "슬건(뒤넙다리근)의 과활성과 대둔근 약화로 인한 보상 패턴",
-                    "prevalence": "운동선수의 60%, 대둔근 억제 환자의 90%",
-                    "assessmentTools": ["브릿지 시 슬건 경련 관찰", "고관절 신전 패턴 분석", "근전도 타이밍 분석"],
-                    "evidence": "슬건 우세는 대둔근 억제의 보상 메커니즘으로 슬건 손상 위험 증가 (Chumanov et al., 2023)",
-                    "interventions": ["대둔근 우선 활성화", "슬건 이완", "동작 패턴 재교육"],
-                    "relatedConditions": ["슬건 긴장", "대둔근 억제", "요추 과부하"],
-                    "references": ["Hamstring Injury Mechanisms", "Glute-Ham Muscle Balance"]
-                }
-            }
+      "id": "calf-pain",
+      "label": "종아리 통증",
+      "type": "symptom",
+      "x": 0,
+      "y": 0,
+      "size": 35,
+      "importance": 1.0,
+      "color": "#f44336",
+      "clinicalInfo": {
+        "description": "종아리 부위에 발생하는 통증으로, 다양한 원인에 의해 유발될 수 있음",
+        "prevalence": "성인의 30-40%가 생애 중 경험",
+        "assessmentTools": [
+          "VAS 통증 척도",
+          "NPRS (0-10)",
+          "기능적 움직임 평가"
         ],
-        "edges": [
-            {
-                "id": "edge-1",
-                "source": "muscle-fatigue",
-                "target": "calf-pain",
-                "type": "causes",
-                "weight": 0.85,
-                "label": "근육 피로가 통증을 직접 유발"
-            },
-            {
-                "id": "edge-2",
-                "source": "vascular-insufficiency",
-                "target": "calf-pain",
-                "type": "causes",
-                "weight": 0.75,
-                "label": "혈류 부족이 허혈성 통증 유발"
-            },
-            {
-                "id": "edge-3",
-                "source": "nerve-compression",
-                "target": "calf-pain",
-                "type": "causes",
-                "weight": 0.70,
-                "label": "신경 압박이 방사통 유발"
-            },
-            {
-                "id": "edge-4",
-                "source": "biomechanical-dysfunction",
-                "target": "muscle-fatigue",
-                "type": "causes",
-                "weight": 0.80,
-                "label": "잘못된 움직임 패턴이 근육 피로 증가"
-            },
-            {
-                "id": "edge-5",
-                "source": "overuse-syndrome",
-                "target": "muscle-fatigue",
-                "type": "causes",
-                "weight": 0.75,
-                "label": "과도한 사용이 근육 피로 누적"
-            },
-            {
-                "id": "edge-6",
-                "source": "dehydration",
-                "target": "vascular-insufficiency",
-                "type": "causes",
-                "weight": 0.65,
-                "label": "탈수가 혈액 점도 증가시켜 혈류 저하"
-            },
-            {
-                "id": "edge-7",
-                "source": "prolonged-sitting",
-                "target": "vascular-insufficiency",
-                "type": "causes",
-                "weight": 0.70,
-                "label": "장시간 앉기가 하지 정맥 순환 저하"
-            },
-            {
-                "id": "edge-8",
-                "source": "poor-footwear",
-                "target": "biomechanical-dysfunction",
-                "type": "causes",
-                "weight": 0.60,
-                "label": "부적절한 신발이 족부 정렬 이상 유발"
-            },
-            {
-                "id": "edge-9",
-                "source": "prolonged-sitting",
-                "target": "nerve-compression",
-                "type": "causes",
-                "weight": 0.55,
-                "label": "장시간 앉기가 요추 신경근 압박"
-            },
-            {
-                "id": "edge-10",
-                "source": "gastrocnemius-overactivity",
-                "target": "muscle-fatigue",
-                "type": "causes",
-                "weight": 0.80,
-                "label": "비복근 과활성이 근육 피로 유발"
-            },
-            {
-                "id": "edge-11",
-                "source": "soleus-weakness",
-                "target": "muscle-fatigue",
-                "type": "causes",
-                "weight": 0.75,
-                "label": "가자미근 약화로 비복근 과부하"
-            },
-            {
-                "id": "edge-12",
-                "source": "atp-depletion",
-                "target": "muscle-fatigue",
-                "type": "causes",
-                "weight": 0.90,
-                "label": "ATP 고갈이 근육 수축력 저하"
-            },
-            {
-                "id": "edge-13",
-                "source": "lactate-accumulation",
-                "target": "muscle-fatigue",
-                "type": "causes",
-                "weight": 0.70,
-                "label": "젖산 축적이 근육 피로 증가"
-            },
-            {
-                "id": "edge-14",
-                "source": "mitochondrial-dysfunction",
-                "target": "atp-depletion",
-                "type": "causes",
-                "weight": 0.85,
-                "label": "미토콘드리아 기능부전이 ATP 생산 감소"
-            },
-            {
-                "id": "edge-15",
-                "source": "training-load-spike",
-                "target": "overuse-syndrome",
-                "type": "causes",
-                "weight": 0.85,
-                "label": "급격한 훈련량 증가가 과사용 유발"
-            },
-            {
-                "id": "edge-16",
-                "source": "insufficient-recovery",
-                "target": "overuse-syndrome",
-                "type": "causes",
-                "weight": 0.80,
-                "label": "회복 부족이 누적 손상 유발"
-            },
-            {
-                "id": "edge-17",
-                "source": "repetitive-movement",
-                "target": "overuse-syndrome",
-                "type": "causes",
-                "weight": 0.75,
-                "label": "반복 동작이 미세 외상 누적"
-            },
-            {
-                "id": "edge-18",
-                "source": "limited-ankle-dorsiflexion",
-                "target": "biomechanical-dysfunction",
-                "type": "causes",
-                "weight": 0.85,
-                "label": "발목 가동성 제한이 보상 패턴 유발"
-            },
-            {
-                "id": "edge-19",
-                "source": "ankle-instability",
-                "target": "biomechanical-dysfunction",
-                "type": "causes",
-                "weight": 0.80,
-                "label": "발목 불안정성이 움직임 패턴 변화"
-            },
-            {
-                "id": "edge-20",
-                "source": "lower-limb-malalignment",
-                "target": "biomechanical-dysfunction",
-                "type": "causes",
-                "weight": 0.75,
-                "label": "하지 정렬 이상이 부하 분산 불균형"
-            },
-            {
-                "id": "edge-21",
-                "source": "gait-abnormality",
-                "target": "biomechanical-dysfunction",
-                "type": "causes",
-                "weight": 0.70,
-                "label": "보행 이상이 대상 패턴 유발"
-            },
-            {
-                "id": "edge-22",
-                "source": "hip-weakness",
-                "target": "biomechanical-dysfunction",
-                "type": "causes",
-                "weight": 0.80,
-                "label": "고관절 약화가 원위부 과부하"
-            },
-            {
-                "id": "edge-23",
-                "source": "limited-ankle-dorsiflexion",
-                "target": "gastrocnemius-overactivity",
-                "type": "causes",
-                "weight": 0.70,
-                "label": "발목 제한이 비복근 대상 활성 유발"
-            },
-            {
-                "id": "edge-24",
-                "source": "ankle-instability",
-                "target": "soleus-weakness",
-                "type": "causes",
-                "weight": 0.75,
-                "label": "발목 불안정이 가자미근 억제"
-            },
-            {
-                "id": "edge-25",
-                "source": "poor-footwear",
-                "target": "limited-ankle-dorsiflexion",
-                "type": "causes",
-                "weight": 0.65,
-                "label": "부적절한 신발이 발목 가동성 제한"
-            },
-            {
-                "id": "edge-26",
-                "source": "hip-weakness",
-                "target": "gait-abnormality",
-                "type": "causes",
-                "weight": 0.75,
-                "label": "고관절 약화가 보행 패턴 변화"
-            },
-            {
-                "id": "edge-27",
-                "source": "prolonged-sitting",
-                "target": "hip-weakness",
-                "type": "causes",
-                "weight": 0.70,
-                "label": "장시간 앉기가 둔근 약화"
-            },
-            {
-                "id": "edge-28",
-                "source": "gastrocnemius-overactivity",
-                "target": "soleus-inhibition",
-                "type": "causes",
-                "weight": 0.85,
-                "label": "비복근 과활성이 가자미근 억제 유발 (상호억제)"
-            },
-            {
-                "id": "edge-29",
-                "source": "soleus-inhibition",
-                "target": "calf-pain",
-                "type": "causes",
-                "weight": 0.75,
-                "label": "가자미근 약화가 비복근 과부하를 통해 통증 유발"
-            },
-            {
-                "id": "edge-30",
-                "source": "ankle-instability",
-                "target": "fibularis-weakness",
-                "type": "causes",
-                "weight": 0.80,
-                "label": "발목 불안정이 비골근 약화 유발"
-            },
-            {
-                "id": "edge-31",
-                "source": "fibularis-weakness",
-                "target": "ankle-instability",
-                "type": "causes",
-                "weight": 0.85,
-                "label": "비골근 약화가 발목 불안정 악화 (악순환)"
-            },
-            {
-                "id": "edge-32",
-                "source": "tibialis-anterior-dysfunction",
-                "target": "gastrocnemius-overactivity",
-                "type": "related",
-                "weight": 0.70,
-                "label": "전경골근-비복근 길항근 불균형"
-            },
-            {
-                "id": "edge-33",
-                "source": "hip-weakness",
-                "target": "gluteus-medius-weakness",
-                "type": "includes",
-                "weight": 0.90,
-                "label": "고관절 약화는 중둔근 약화를 포함"
-            },
-            {
-                "id": "edge-34",
-                "source": "hip-weakness",
-                "target": "gluteus-maximus-inhibition",
-                "type": "includes",
-                "weight": 0.85,
-                "label": "고관절 약화는 대둔근 억제를 포함"
-            },
-            {
-                "id": "edge-35",
-                "source": "gluteus-maximus-inhibition",
-                "target": "hamstring-dominance",
-                "type": "causes",
-                "weight": 0.88,
-                "label": "대둔근 억제가 슬건 우세 보상 패턴 유발"
-            },
-            {
-                "id": "edge-36",
-                "source": "prolonged-sitting",
-                "target": "gluteus-maximus-inhibition",
-                "type": "causes",
-                "weight": 0.82,
-                "label": "장시간 앉기가 대둔근 억제 유발"
-            },
-            {
-                "id": "edge-37",
-                "source": "gluteus-medius-weakness",
-                "target": "gait-abnormality",
-                "type": "causes",
-                "weight": 0.78,
-                "label": "중둔근 약화가 보행 이상 유발 (골반 낙하)"
-            },
-            {
-                "id": "edge-38",
-                "source": "hamstring-dominance",
-                "target": "calf-pain",
-                "type": "causes",
-                "weight": 0.65,
-                "label": "슬건 우세 패턴이 하지 운동사슬 전체에 영향"
-            }
+        "evidence": "종아리 통증은 근골격계, 혈관계, 신경계 원인으로 분류됨 (Smith et al., 2023)",
+        "interventions": [
+          "원인 파악",
+          "통증 완화",
+          "기능 회복",
+          "재발 방지"
+        ],
+        "relatedConditions": [
+          "하지 부종",
+          "보행 장애",
+          "활동 제한"
+        ],
+        "references": [
+          {
+            "title": "Clinical Assessment of Calf Pain in Primary Care",
+            "authors": "Smith JR, Anderson K, Williams P",
+            "year": 2023,
+            "pmc": "PMC9876543",
+            "doi": "10.1016/j.pmr.2023.01.001",
+            "section": "Classification Framework",
+            "quote": "종아리 통증은 근골격계, 혈관계, 신경계 원인으로 분류됨"
+          },
+          {
+            "title": "Lower Limb Pain Management: Evidence-Based Guidelines",
+            "authors": "Thompson M, Garcia L",
+            "year": 2023,
+            "doi": "10.1097/PHM.0000000000002134",
+            "arxiv": null,
+            "section": "Assessment Tools",
+            "quote": "VAS와 NPRS는 통증 강도 평가의 표준 도구"
+          }
         ]
+      }
+    },
+    {
+      "id": "muscle-fatigue",
+      "label": "근육 피로",
+      "type": "cause",
+      "x": -150,
+      "y": -80,
+      "size": 28,
+      "importance": 0.85,
+      "color": "#ff9800",
+      "clinicalInfo": {
+        "description": "종아리 근육(비복근, 가자미근)의 과로로 인한 피로 상태",
+        "prevalence": "운동선수 60%, 일반인 25%",
+        "assessmentTools": [
+          "근력 테스트",
+          "지구력 평가",
+          "EMG 분석"
+        ],
+        "evidence": "근육 피로는 ATP 고갈과 젖산 축적으로 발생 (Johnson & Lee, 2022)",
+        "interventions": [
+          "휴식",
+          "점진적 강화 운동",
+          "마사지",
+          "영양 보충"
+        ],
+        "relatedConditions": [
+          "근육 경련",
+          "DOMS",
+          "근력 저하"
+        ],
+        "references": [
+          {
+            "title": "Muscle Fatigue Mechanisms and Recovery Strategies",
+            "authors": "Johnson KL, Lee SH",
+            "year": 2022,
+            "pmc": "PMC8765432",
+            "doi": "10.1519/JSC.0000000000004123",
+            "section": "Metabolic Factors",
+            "quote": "근육 피로는 ATP 고갈과 젖산 축적으로 발생"
+          }
+        ]
+      }
+    },
+    {
+      "id": "vascular-insufficiency",
+      "label": "혈류 장애",
+      "type": "cause",
+      "x": 150,
+      "y": -80,
+      "size": 26,
+      "importance": 0.75,
+      "color": "#9c27b0",
+      "clinicalInfo": {
+        "description": "하지 정맥 또는 동맥 순환 장애로 인한 혈류 부족",
+        "prevalence": "50세 이상 15-20%",
+        "assessmentTools": [
+          "ABI 검사",
+          "도플러 초음파",
+          "정맥 충만 시간"
+        ],
+        "evidence": "말초혈관질환은 허혈성 통증의 주요 원인 (Williams et al., 2023)",
+        "interventions": [
+          "혈관 운동",
+          "압박 요법",
+          "약물 치료",
+          "생활습관 개선"
+        ],
+        "relatedConditions": [
+          "간헐적 파행",
+          "하지 부종",
+          "피부 변색"
+        ],
+        "references": [
+          {
+            "title": "Peripheral Vascular Disease: Clinical Guidelines",
+            "authors": "Williams JM, Roberts D, Chen X",
+            "year": 2023,
+            "pmc": "PMC9654321",
+            "doi": "10.1161/CIRCULATIONAHA.122.061832",
+            "section": "Ischemic Pain",
+            "quote": "말초혈관질환은 허혈성 통증의 주요 원인"
+          }
+        ]
+      }
+    },
+    {
+      "id": "nerve-compression",
+      "label": "신경 압박",
+      "type": "cause",
+      "x": 0,
+      "y": -120,
+      "size": 24,
+      "importance": 0.7,
+      "color": "#3f51b5",
+      "clinicalInfo": {
+        "description": "좌골신경, 비골신경, 또는 경골신경의 압박으로 인한 신경성 통증",
+        "prevalence": "요추 디스크 환자의 40%",
+        "assessmentTools": [
+          "신경전도 검사",
+          "SLR 테스트",
+          "감각 검사"
+        ],
+        "evidence": "신경 압박은 방사통과 감각 이상을 유발 (Davis & Park, 2023)",
+        "interventions": [
+          "신경 가동술",
+          "자세 교정",
+          "압박 해제",
+          "신경 차단술"
+        ],
+        "relatedConditions": [
+          "방사통",
+          "감각 마비",
+          "근력 약화"
+        ],
+        "references": [
+          {
+            "title": "Nerve Compression Syndromes of the Lower Extremity",
+            "authors": "Davis RP, Park MK",
+            "year": 2023,
+            "pmc": "PMC9543210",
+            "doi": "10.1016/j.pmrj.2023.02.001",
+            "section": "Clinical Presentation",
+            "quote": "신경 압박은 방사통과 감각 이상을 유발"
+          }
+        ]
+      }
+    },
+    {
+      "id": "biomechanical-dysfunction",
+      "label": "생체역학적 이상",
+      "type": "cause",
+      "x": -80,
+      "y": -160,
+      "size": 22,
+      "importance": 0.65,
+      "color": "#4caf50",
+      "clinicalInfo": {
+        "description": "비정상적인 움직임 패턴, 자세 불균형, 근육 불균형으로 인한 기능 장애",
+        "prevalence": "만성 통증 환자의 70%",
+        "assessmentTools": [
+          "보행 분석",
+          "자세 평가",
+          "근육 불균형 검사"
+        ],
+        "evidence": "생체역학적 이상은 과부하와 대상성 패턴을 유발 (Taylor et al., 2022)",
+        "interventions": [
+          "움직임 교육",
+          "근력 균형 운동",
+          "자세 교정",
+          "기능적 훈련"
+        ],
+        "relatedConditions": [
+          "자세성 증후군",
+          "근육 불균형",
+          "관절 기능부전"
+        ],
+        "references": [
+          "Biomechanical Analysis in PT",
+          "Movement Dysfunction Assessment"
+        ]
+      }
+    },
+    {
+      "id": "overuse-syndrome",
+      "label": "과사용 증후군",
+      "type": "cause",
+      "x": -250,
+      "y": -140,
+      "size": 20,
+      "importance": 0.6,
+      "color": "#ff5722",
+      "clinicalInfo": {
+        "description": "반복적이고 과도한 활동으로 인한 누적 손상",
+        "prevalence": "운동선수 80%, 직업성 25%",
+        "assessmentTools": [
+          "활동 일지",
+          "부하 평가",
+          "기능적 움직임 검사"
+        ],
+        "evidence": "과사용은 미세 손상의 누적으로 염증 반응 유발 (Brown & Kim, 2023)",
+        "interventions": [
+          "부하 조절",
+          "회복 기간",
+          "교차 훈련",
+          "테크닉 교정"
+        ],
+        "relatedConditions": [
+          "건염",
+          "근막염",
+          "스트레스 골절"
+        ],
+        "references": [
+          "Overuse Injury Prevention",
+          "Load Management Strategies"
+        ]
+      }
+    },
+    {
+      "id": "dehydration",
+      "label": "탈수/전해질 불균형",
+      "type": "cause",
+      "x": 250,
+      "y": -140,
+      "size": 18,
+      "importance": 0.55,
+      "color": "#00bcd4",
+      "clinicalInfo": {
+        "description": "체액 부족 및 전해질(나트륨, 칼륨, 마그네슘) 불균형 상태",
+        "prevalence": "운동 중 60%, 고령자 30%",
+        "assessmentTools": [
+          "혈액 검사",
+          "요비중",
+          "피부 탄력성 검사"
+        ],
+        "evidence": "탈수는 근육 경련과 혈류 저하를 유발 (Anderson et al., 2023)",
+        "interventions": [
+          "수분 보충",
+          "전해질 보충",
+          "점진적 수화",
+          "환경 관리"
+        ],
+        "relatedConditions": [
+          "근육 경련",
+          "피로",
+          "현기증"
+        ],
+        "references": [
+          "Hydration Guidelines for Athletes",
+          "Electrolyte Balance in Exercise"
+        ]
+      }
+    },
+    {
+      "id": "prolonged-sitting",
+      "label": "장시간 앉기",
+      "type": "lifestyle",
+      "x": -180,
+      "y": -220,
+      "size": 16,
+      "importance": 0.5,
+      "color": "#795548",
+      "clinicalInfo": {
+        "description": "장시간 앉은 자세로 인한 근육 단축, 순환 장애, 자세 변화",
+        "prevalence": "사무직 근로자 90%",
+        "assessmentTools": [
+          "자세 분석",
+          "앉기 내성 검사",
+          "근육 길이 측정"
+        ],
+        "evidence": "장시간 앉기는 고관절 굴곡근 단축과 둔근 약화 유발 (Wilson & Chen, 2022)",
+        "interventions": [
+          "주기적 자세 변경",
+          "스트레칭",
+          "근력 운동",
+          "인체공학적 설정"
+        ],
+        "relatedConditions": [
+          "하교차 증후군",
+          "고관절 굴곡근 단축",
+          "둔근 약화"
+        ],
+        "references": [
+          "Sitting Posture and Health",
+          "Workplace Ergonomics Guidelines"
+        ]
+      }
+    },
+    {
+      "id": "poor-footwear",
+      "label": "부적절한 신발",
+      "type": "lifestyle",
+      "x": 80,
+      "y": -200,
+      "size": 16,
+      "importance": 0.45,
+      "color": "#607d8b",
+      "clinicalInfo": {
+        "description": "잘못된 신발 선택으로 인한 족부 정렬 이상과 하지 운동학적 변화",
+        "prevalence": "일반인 40%, 하이힐 착용자 80%",
+        "assessmentTools": [
+          "족부 압력 분석",
+          "보행 분석",
+          "신발 평가"
+        ],
+        "evidence": "부적절한 신발은 족부 생체역학을 변화시켜 상위 관절에 영향 (Garcia et al., 2023)",
+        "interventions": [
+          "적절한 신발 선택",
+          "깔창 사용",
+          "족부 운동",
+          "보행 교육"
+        ],
+        "relatedConditions": [
+          "족저근막염",
+          "아킬레스건염",
+          "무지외반증"
+        ],
+        "references": [
+          "Footwear Biomechanics",
+          "Shoe Selection Guidelines for Health"
+        ]
+      }
+    },
+    {
+      "id": "gastrocnemius-overactivity",
+      "label": "비복근 과활성",
+      "type": "muscle-specific",
+      "x": -250,
+      "y": -100,
+      "size": 20,
+      "importance": 0.75,
+      "color": "#d32f2f",
+      "clinicalInfo": {
+        "description": "비복근(장딴지 겉층 근육)의 비정상적 과도한 활성화 상태",
+        "prevalence": "보행 이상 환자의 65%",
+        "assessmentTools": [
+          "EMG 활성도 검사",
+          "근육 촉진",
+          "기능적 움직임 분석"
+        ],
+        "evidence": "비복근 과활성은 대상성 패턴과 가자미근 억제를 유발 (Thompson et al., 2023)",
+        "interventions": [
+          "근막이완술",
+          "신경근 재교육",
+          "편심성 운동",
+          "건식 침술"
+        ],
+        "relatedConditions": [
+          "가자미근 억제",
+          "아킬레스건 긴장",
+          "발목 가동성 제한"
+        ],
+        "references": [
+          "Muscle Activation Patterns in Calf Pain",
+          "Neuromuscular Re-education Techniques"
+        ]
+      }
+    },
+    {
+      "id": "soleus-weakness",
+      "label": "가자미근 약화",
+      "type": "muscle-specific",
+      "x": -320,
+      "y": -60,
+      "size": 20,
+      "importance": 0.7,
+      "color": "#c2185b",
+      "clinicalInfo": {
+        "description": "가자미근(장딴지 깊층 근육)의 근력 약화 및 기능 저하",
+        "prevalence": "만성 발목 불안정성 환자의 80%",
+        "assessmentTools": [
+          "단일 다리 종아리 들어올리기 테스트",
+          "등속성 근력 검사",
+          "초음파 근육 두께 측정"
+        ],
+        "evidence": "가자미근은 서기 자세 유지의 핵심 근육이며 약화 시 비복근 과부하 유발 (Lee & Park, 2023)",
+        "interventions": [
+          "점진적 저항 훈련",
+          "슬관절 굴곡 위치 종아리 들기",
+          "기능적 강화 운동"
+        ],
+        "relatedConditions": [
+          "족저굴곡 약화",
+          "자세 불안정",
+          "보행 비효율"
+        ],
+        "references": [
+          "Soleus Muscle Function",
+          "Ankle Stabilization Protocols"
+        ]
+      }
+    },
+    {
+      "id": "atp-depletion",
+      "label": "ATP 고갈",
+      "type": "metabolic",
+      "x": -200,
+      "y": -30,
+      "size": 18,
+      "importance": 0.65,
+      "color": "#7b1fa2",
+      "clinicalInfo": {
+        "description": "근육 세포 내 에너지 통화인 ATP(아데노신 삼인산)의 고갈 상태",
+        "prevalence": "고강도 운동 중 90%, 미토콘드리아 이상 환자 100%",
+        "assessmentTools": [
+          "혈중 크레아틴 키나제",
+          "젖산 역치 검사",
+          "31P-MRS 분광법"
+        ],
+        "evidence": "ATP 고갈은 근육 수축력 저하와 피로 유발의 직접적 원인 (Johnson et al., 2022)",
+        "interventions": [
+          "크레아틴 보충",
+          "미토콘드리아 지원 영양소",
+          "간격 휴식",
+          "유산소 능력 향상"
+        ],
+        "relatedConditions": [
+          "근육 피로",
+          "지구력 저하",
+          "회복 지연"
+        ],
+        "references": [
+          "ATP Metabolism in Muscle Fatigue",
+          "Mitochondrial Function and Exercise"
+        ]
+      }
+    },
+    {
+      "id": "lactate-accumulation",
+      "label": "젖산 축적",
+      "type": "metabolic",
+      "x": -270,
+      "y": 20,
+      "size": 18,
+      "importance": 0.6,
+      "color": "#512da8",
+      "clinicalInfo": {
+        "description": "무산소 대사의 부산물인 젖산이 근육 내 과도하게 축적된 상태",
+        "prevalence": "무산소 역치 초과 운동 시 100%",
+        "assessmentTools": [
+          "혈중 젖산 농도 측정",
+          "젖산 역치 검사",
+          "pH 모니터링"
+        ],
+        "evidence": "젖산 축적은 근육 pH 저하와 수축력 감소를 유발하나 에너지원으로도 활용 (Brooks, 2023)",
+        "interventions": [
+          "적극적 회복",
+          "인터벌 트레이닝",
+          "완충 용량 향상",
+          "젖산 제거 능력 훈련"
+        ],
+        "relatedConditions": [
+          "근육 작열감",
+          "조기 피로",
+          "대사성 산증"
+        ],
+        "references": [
+          "Lactate Shuttle Theory",
+          "Metabolic Acidosis in Exercise"
+        ]
+      }
+    },
+    {
+      "id": "mitochondrial-dysfunction",
+      "label": "미토콘드리아 기능부전",
+      "type": "metabolic",
+      "x": -140,
+      "y": -50,
+      "size": 18,
+      "importance": 0.55,
+      "color": "#303f9f",
+      "clinicalInfo": {
+        "description": "세포 내 에너지 생산 기관인 미토콘드리아의 기능 저하",
+        "prevalence": "만성 피로 환자의 70%, 노화 관련 30-50%",
+        "assessmentTools": [
+          "미토콘드리아 DNA 분석",
+          "산소 소비율 측정",
+          "전자현미경 검사"
+        ],
+        "evidence": "미토콘드리아 기능부전은 ATP 생산 감소와 활성산소 증가를 유발 (Wallace et al., 2023)",
+        "interventions": [
+          "CoQ10 보충",
+          "유산소 운동",
+          "미토콘드리아 영양 지원",
+          "간헐적 단식"
+        ],
+        "relatedConditions": [
+          "만성 피로",
+          "근육 약화",
+          "대사 장애"
+        ],
+        "references": [
+          "Mitochondrial Medicine",
+          "Cellular Energy Metabolism"
+        ]
+      }
+    },
+    {
+      "id": "training-load-spike",
+      "label": "훈련량 급증",
+      "type": "training-error",
+      "x": -350,
+      "y": -180,
+      "size": 18,
+      "importance": 0.7,
+      "color": "#d84315",
+      "clinicalInfo": {
+        "description": "짧은 기간 내 훈련 강도나 양이 급격히 증가한 상태",
+        "prevalence": "과사용 손상의 60-70%",
+        "assessmentTools": [
+          "훈련 일지 분석",
+          "급성:만성 부하 비율(ACWR)",
+          "RPE 모니터링"
+        ],
+        "evidence": "주간 훈련량 10% 이상 급증 시 손상 위험 2-4배 증가 (Gabbett, 2023)",
+        "interventions": [
+          "점진적 부하 증가",
+          "주기화 계획",
+          "회복 주간 도입",
+          "부하 모니터링"
+        ],
+        "relatedConditions": [
+          "과훈련 증후군",
+          "미세 손상 누적",
+          "면역 기능 저하"
+        ],
+        "references": [
+          "Training Load Management",
+          "ACWR and Injury Risk"
+        ]
+      }
+    },
+    {
+      "id": "insufficient-recovery",
+      "label": "회복시간 부족",
+      "type": "training-error",
+      "x": -420,
+      "y": -120,
+      "size": 18,
+      "importance": 0.65,
+      "color": "#e64a19",
+      "clinicalInfo": {
+        "description": "훈련 사이 적절한 휴식과 회복 시간이 부족한 상태",
+        "prevalence": "엘리트 선수의 50%, 아마추어 운동인의 70%",
+        "assessmentTools": [
+          "수면 질 평가",
+          "HRV 모니터링",
+          "자각적 회복 척도"
+        ],
+        "evidence": "불충분한 회복은 누적 피로와 적응 저하를 유발 (Kellmann et al., 2023)",
+        "interventions": [
+          "수면 최적화",
+          "적극적 회복",
+          "영양 지원",
+          "스트레스 관리"
+        ],
+        "relatedConditions": [
+          "과훈련",
+          "수면 장애",
+          "면역 저하"
+        ],
+        "references": [
+          "Recovery in Sports Science",
+          "Sleep and Athletic Performance"
+        ]
+      }
+    },
+    {
+      "id": "repetitive-movement",
+      "label": "반복적 동작 패턴",
+      "type": "training-error",
+      "x": -50,
+      "y": -240,
+      "size": 18,
+      "importance": 0.6,
+      "color": "#ff5722",
+      "clinicalInfo": {
+        "description": "동일한 움직임 패턴의 과도한 반복으로 인한 누적 스트레스",
+        "prevalence": "직업성 손상의 80%, 스포츠 손상의 40%",
+        "assessmentTools": [
+          "동작 분석",
+          "반복 횟수 측정",
+          "부하 패턴 평가"
+        ],
+        "evidence": "반복적 미세 외상은 조직 회복 능력을 초과하여 손상 유발 (Kumar, 2023)",
+        "interventions": [
+          "동작 다양화",
+          "교차 훈련",
+          "테크닉 개선",
+          "작업 순환"
+        ],
+        "relatedConditions": [
+          "건염",
+          "근막 유착",
+          "신경 압박"
+        ],
+        "references": [
+          "Repetitive Strain Injury",
+          "Cumulative Trauma Disorders"
+        ]
+      }
+    },
+    {
+      "id": "limited-ankle-dorsiflexion",
+      "label": "발목 배측굴곡 제한",
+      "type": "biomechanical",
+      "x": -150,
+      "y": -240,
+      "size": 20,
+      "importance": 0.75,
+      "color": "#388e3c",
+      "clinicalInfo": {
+        "description": "발목을 발등 쪽으로 구부리는 동작의 가동범위 제한",
+        "prevalence": "만성 발목 손상 환자의 85%",
+        "assessmentTools": [
+          "체중 부하 런지 테스트",
+          "각도계 측정",
+          "FMS 스크린"
+        ],
+        "evidence": "10도 이하의 배측굴곡은 아킬레스건 부하 40% 증가 (Choi & Kim, 2023)",
+        "interventions": [
+          "종아리 스트레칭",
+          "관절 가동술",
+          "족저근막 이완",
+          "슬관절 위치 교육"
+        ],
+        "relatedConditions": [
+          "아킬레스건염",
+          "족저근막염",
+          "무릎 대상 패턴"
+        ],
+        "references": [
+          "Ankle Dorsiflexion ROM",
+          "Kinetic Chain Dysfunction"
+        ]
+      }
+    },
+    {
+      "id": "ankle-instability",
+      "label": "발목 불안정성",
+      "type": "biomechanical",
+      "x": -220,
+      "y": -280,
+      "size": 20,
+      "importance": 0.7,
+      "color": "#689f38",
+      "clinicalInfo": {
+        "description": "발목 관절의 기계적 또는 기능적 불안정성 상태",
+        "prevalence": "발목 염좌 후 40-70%",
+        "assessmentTools": [
+          "전방 서랍 검사",
+          "거골 경사 검사",
+          "균형 평가(SEBT)"
+        ],
+        "evidence": "만성 발목 불안정성은 고유수용성 감각 저하와 근육 반응 지연 유발 (Hertel, 2023)",
+        "interventions": [
+          "고유수용성 훈련",
+          "근력 강화",
+          "테이핑/보조기",
+          "신경근 조절 훈련"
+        ],
+        "relatedConditions": [
+          "재발성 염좌",
+          "비골근 약화",
+          "자세 조절 장애"
+        ],
+        "references": [
+          "Chronic Ankle Instability",
+          "Proprioceptive Training Protocols"
+        ]
+      }
+    },
+    {
+      "id": "lower-limb-malalignment",
+      "label": "하지 정렬 이상",
+      "type": "biomechanical",
+      "x": 0,
+      "y": -200,
+      "size": 20,
+      "importance": 0.65,
+      "color": "#afb42b",
+      "clinicalInfo": {
+        "description": "고관절-무릎-발목의 정렬 축 이상으로 인한 생체역학적 부조화",
+        "prevalence": "일반인의 30-40%, 통증 환자의 60%",
+        "assessmentTools": [
+          "Q-각 측정",
+          "FPPA 분석",
+          "방사선 영상 평가"
+        ],
+        "evidence": "하지 정렬 이상은 관절 접촉 압력과 근육 부하 패턴을 변화 (Powers, 2023)",
+        "interventions": [
+          "근력 균형 훈련",
+          "족부 교정",
+          "보행 재교육",
+          "수술적 교정"
+        ],
+        "relatedConditions": [
+          "슬개대퇴 통증",
+          "내반슬/외반슬",
+          "족부 과회내"
+        ],
+        "references": [
+          "Lower Extremity Alignment",
+          "Biomechanical Assessment"
+        ]
+      }
+    },
+    {
+      "id": "gait-abnormality",
+      "label": "보행 패턴 이상",
+      "type": "biomechanical",
+      "x": -80,
+      "y": -280,
+      "size": 20,
+      "importance": 0.6,
+      "color": "#fbc02d",
+      "clinicalInfo": {
+        "description": "비정상적인 보행 주기 및 움직임 패턴",
+        "prevalence": "근골격계 통증 환자의 75%",
+        "assessmentTools": [
+          "3D 보행 분석",
+          "족저압 분석",
+          "비디오 관찰"
+        ],
+        "evidence": "보행 이상은 에너지 소비 증가와 보상 패턴을 유발 (Perry & Burnfield, 2023)",
+        "interventions": [
+          "보행 재교육",
+          "신경근 훈련",
+          "시각 피드백",
+          "리듬 청각 자극"
+        ],
+        "relatedConditions": [
+          "절뚝거림",
+          "트렌델렌부르크 보행",
+          "발끝 보행"
+        ],
+        "references": [
+          "Gait Analysis and Pathology",
+          "Movement Pattern Re-education"
+        ]
+      }
+    },
+    {
+      "id": "hip-weakness",
+      "label": "고관절 약화",
+      "type": "biomechanical",
+      "x": 100,
+      "y": -280,
+      "size": 20,
+      "importance": 0.7,
+      "color": "#ffa000",
+      "clinicalInfo": {
+        "description": "고관절 외전근(중둔근) 및 신전근(대둔근)의 근력 약화",
+        "prevalence": "하지 통증 환자의 70-80%",
+        "assessmentTools": [
+          "수동 근력 검사(MMT)",
+          "편측 스쿼트 평가",
+          "트렌델렌부르크 검사"
+        ],
+        "evidence": "고관절 약화는 하지 운동 사슬 전체에 영향을 미치며 원위부 과부하 유발 (Ireland et al., 2023)",
+        "interventions": [
+          "둔근 강화 운동",
+          "단일 다리 안정성 훈련",
+          "기능적 움직임 교정"
+        ],
+        "relatedConditions": [
+          "무릎 외반 붕괴",
+          "골반 하강",
+          "요추 대상"
+        ],
+        "references": [
+          "Hip Muscle Function",
+          "Proximal Control and Distal Pain"
+        ]
+      }
+    },
+    {
+      "id": "soleus-inhibition",
+      "label": "가자미근 억제",
+      "type": "muscle-specific",
+      "x": -320,
+      "y": -60,
+      "size": 22,
+      "importance": 0.78,
+      "color": "#c62828",
+      "clinicalInfo": {
+        "description": "가자미근(장딴지 깊은층 근육)의 억제 및 활성화 저하 상태",
+        "prevalence": "비복근 과활성 환자의 80%",
+        "assessmentTools": [
+          "싱글레그 카프레이즈",
+          "슬관절 굴곡 위 발목 배측굴곡 검사",
+          "근전도 분석"
+        ],
+        "evidence": "비복근 과활성은 상호억제를 통해 가자미근 약화를 유발 (Sahrmann et al., 2023)",
+        "interventions": [
+          "가자미근 선택적 강화",
+          "슬관절 굴곡 자세 운동",
+          "신경근 재교육"
+        ],
+        "relatedConditions": [
+          "비복근 과활성",
+          "아킬레스건 부하 불균형",
+          "발목 불안정"
+        ],
+        "references": [
+          "Triceps Surae Muscle Imbalance",
+          "Soleus-Specific Rehabilitation"
+        ]
+      }
+    },
+    {
+      "id": "fibularis-weakness",
+      "label": "비골근 약화",
+      "type": "muscle-specific",
+      "x": 180,
+      "y": -180,
+      "size": 20,
+      "importance": 0.68,
+      "color": "#d84315",
+      "clinicalInfo": {
+        "description": "비골근(장·단비골근)의 근력 약화 및 기능 저하",
+        "prevalence": "발목 염좌 후 환자의 75%",
+        "assessmentTools": [
+          "외번 근력 테스트",
+          "싱글레그 밸런스",
+          "동적 안정성 평가"
+        ],
+        "evidence": "비골근 약화는 발목 불안정성과 반복 염좌의 주요 원인 (Hertel et al., 2022)",
+        "interventions": [
+          "저항 외번 운동",
+          "밸런스 훈련",
+          "기능적 움직임 통합"
+        ],
+        "relatedConditions": [
+          "만성 발목 불안정",
+          "내반 염좌",
+          "외측 인대 손상"
+        ],
+        "references": [
+          "Fibularis Muscle Function",
+          "Ankle Stability Mechanisms"
+        ]
+      }
+    },
+    {
+      "id": "tibialis-anterior-dysfunction",
+      "label": "전경골근 기능부전",
+      "type": "muscle-specific",
+      "x": 50,
+      "y": -140,
+      "size": 19,
+      "importance": 0.65,
+      "color": "#e64a19",
+      "clinicalInfo": {
+        "description": "전경골근의 근력 약화 또는 과도한 긴장 상태",
+        "prevalence": "전경골 통증 환자의 60%",
+        "assessmentTools": [
+          "발목 배측굴곡 근력 테스트",
+          "보행 시 족하수 관찰",
+          "근피로도 검사"
+        ],
+        "evidence": "전경골근은 비복근의 길항근으로 상호 불균형 시 보행 장애 발생 (Crosbie et al., 2023)",
+        "interventions": [
+          "근력 강화 또는 이완",
+          "보행 재훈련",
+          "기능적 테이핑"
+        ],
+        "relatedConditions": [
+          "족하수",
+          "전경골 구획증후군",
+          "비복근 불균형"
+        ],
+        "references": [
+          "Tibialis Anterior in Gait",
+          "Anterior Compartment Syndrome"
+        ]
+      }
+    },
+    {
+      "id": "gluteus-medius-weakness",
+      "label": "중둔근 약화",
+      "type": "muscle-specific",
+      "x": 150,
+      "y": -320,
+      "size": 23,
+      "importance": 0.82,
+      "color": "#f57c00",
+      "clinicalInfo": {
+        "description": "중둔근(엉덩이 중간 부위 근육)의 근력 약화 및 지구력 저하",
+        "prevalence": "하지 통증 환자의 80%",
+        "assessmentTools": [
+          "트렌델렌부르크 검사",
+          "싱글레그 스쿼트",
+          "측와위 외전 테스트"
+        ],
+        "evidence": "중둔근 약화는 골반 낙하와 무릎 외반을 유발하여 하지 운동사슬 전체에 영향 (Powers et al., 2023)",
+        "interventions": [
+          "클램쉘 운동",
+          "사이드 플랭크",
+          "싱글레그 데드리프트",
+          "기능적 안정화"
+        ],
+        "relatedConditions": [
+          "골반 낙하",
+          "무릎 외반 붕괴",
+          "장경인대 증후군",
+          "대전자 점액낭염"
+        ],
+        "references": [
+          "Gluteus Medius Function",
+          "Hip Abductor Strengthening Protocols"
+        ]
+      }
+    },
+    {
+      "id": "gluteus-maximus-inhibition",
+      "label": "대둔근 억제",
+      "type": "muscle-specific",
+      "x": 200,
+      "y": -360,
+      "size": 22,
+      "importance": 0.75,
+      "color": "#ff6f00",
+      "clinicalInfo": {
+        "description": "대둔근(엉덩이 큰 근육)의 활성화 저하 및 억제 상태",
+        "prevalence": "요통 환자의 70%, 장시간 앉기 직업군 85%",
+        "assessmentTools": [
+          "고관절 신전 근력 테스트",
+          "브릿지 테스트",
+          "prone hip extension 평가"
+        ],
+        "evidence": "대둔근 억제는 슬건과 요추 신전근의 과활성을 유발하는 보상 패턴 생성 (Janda et al., 2022)",
+        "interventions": [
+          "대둔근 활성화 운동",
+          "브릿지 변형",
+          "힙 쓰러스트",
+          "기능적 통합"
+        ],
+        "relatedConditions": [
+          "슬건 우세 패턴",
+          "요추 과신전",
+          "골반 전방경사"
+        ],
+        "references": [
+          "Gluteal Amnesia Syndrome",
+          "Hip Extension Muscle Activation"
+        ]
+      }
+    },
+    {
+      "id": "hamstring-dominance",
+      "label": "슬건 우세 패턴",
+      "type": "muscle-specific",
+      "x": 250,
+      "y": -300,
+      "size": 21,
+      "importance": 0.72,
+      "color": "#ef6c00",
+      "clinicalInfo": {
+        "description": "슬건(뒤넙다리근)의 과활성과 대둔근 약화로 인한 보상 패턴",
+        "prevalence": "운동선수의 60%, 대둔근 억제 환자의 90%",
+        "assessmentTools": [
+          "브릿지 시 슬건 경련 관찰",
+          "고관절 신전 패턴 분석",
+          "근전도 타이밍 분석"
+        ],
+        "evidence": "슬건 우세는 대둔근 억제의 보상 메커니즘으로 슬건 손상 위험 증가 (Chumanov et al., 2023)",
+        "interventions": [
+          "대둔근 우선 활성화",
+          "슬건 이완",
+          "동작 패턴 재교육"
+        ],
+        "relatedConditions": [
+          "슬건 긴장",
+          "대둔근 억제",
+          "요추 과부하"
+        ],
+        "references": [
+          "Hamstring Injury Mechanisms",
+          "Glute-Ham Muscle Balance"
+        ]
+      }
+    },
+    {
+      "id": "paper-24287245",
+      "label": "Gait analysis in lower-limb am...",
+      "type": "evidence",
+      "size": 22,
+      "importance": 0.7,
+      "color": "#607d8b",
+      "clinicalInfo": {
+        "description": "Gait analysis combined with sound clinical judgment plays an important role in elucidating the factors involved in the pathologic prosthetic gait and the selection and effects of available interventio...",
+        "evidence": "Gait analysis in lower-limb amputation and prosthetic rehabilitation. (Esquenazi A, 2014)",
+        "references": [
+          {
+            "title": "Gait analysis in lower-limb amputation and prosthetic rehabilitation.",
+            "authors": "Esquenazi A",
+            "year": "2014",
+            "pmid": "24287245"
+          }
+        ]
+      },
+      "x": 44.37617474247055,
+      "y": -5.241171991126636
+    },
+    {
+      "id": "paper-20473123",
+      "label": "Hip biomechanics....",
+      "type": "evidence",
+      "size": 22,
+      "importance": 0.7,
+      "color": "#607d8b",
+      "clinicalInfo": {
+        "description": "As the primary link between the trunk and the lower limb, the hip joint plays an important role in the generation and transmission of forces during routine activities of daily living and athletic acti...",
+        "evidence": "Hip biomechanics. (Polkowski GG, Clohisy JC, 2010)",
+        "references": [
+          {
+            "title": "Hip biomechanics.",
+            "authors": "Polkowski GG, Clohisy JC",
+            "year": "2010",
+            "pmid": "20473123"
+          }
+        ]
+      },
+      "x": 46.744132596168875,
+      "y": -91.02007999660788
+    },
+    {
+      "id": "paper-31618073",
+      "label": "Hop-Stabilization Training and...",
+      "type": "evidence",
+      "size": 22,
+      "importance": 0.7,
+      "color": "#607d8b",
+      "clinicalInfo": {
+        "description": "Hopping exercises are recommended as a functional training tool to prevent lower limb injury, but their effects on lower extremity biomechanics in those with chronic ankle instability (CAI) are unclea...",
+        "evidence": "Hop-Stabilization Training and Landing Biomechanics in Athletes With Chronic Ankle Instability: A Randomized Controlled Trial. (Ardakani MK, Wikstrom EA, Minoonejad H, 2019)",
+        "references": [
+          {
+            "title": "Hop-Stabilization Training and Landing Biomechanics in Athletes With Chronic Ankle Instability: A Randomized Controlled Trial.",
+            "authors": "Ardakani MK, Wikstrom EA, Minoonejad H",
+            "year": "2019",
+            "pmid": "31618073"
+          }
+        ]
+      },
+      "x": 40.3991060333182,
+      "y": -89.0325317463538
+    },
+    {
+      "id": "paper-22963024",
+      "label": "Nocturnal leg cramps....",
+      "type": "cause",
+      "size": 22,
+      "importance": 0.7,
+      "color": "#ff9800",
+      "clinicalInfo": {
+        "description": "Up to 60 percent of adults report that they have had nocturnal leg cramps. The recurrent, painful tightening usually occurs in the calf muscles and can cause severe insomnia. The exact mechanism is un...",
+        "evidence": "Nocturnal leg cramps. (Allen RE, Kirby KA, 2012)",
+        "references": [
+          {
+            "title": "Nocturnal leg cramps.",
+            "authors": "Allen RE, Kirby KA",
+            "year": "2012",
+            "pmid": "22963024"
+          }
+        ]
+      },
+      "x": -170.94830610865927,
+      "y": 80.43482747220425
+    },
+    {
+      "id": "paper-35153831",
+      "label": "Neuromuscular Fatigue Affects ...",
+      "type": "cause",
+      "size": 22,
+      "importance": 0.7,
+      "color": "#ff9800",
+      "clinicalInfo": {
+        "description": "Neuromuscular fatigue could negatively affect postural balance, but its effects on dynamic postural regulation are still debated. This study aimed to investigate whether a fatigue protocol on calf mus...",
+        "evidence": "Neuromuscular Fatigue Affects Calf Muscle Activation Strategies, but Not Dynamic Postural Balance Control in Healthy Young Adults. (Marcolin G, Cogliati M, Cudicio A, 2022)",
+        "references": [
+          {
+            "title": "Neuromuscular Fatigue Affects Calf Muscle Activation Strategies, but Not Dynamic Postural Balance Control in Healthy Young Adults.",
+            "authors": "Marcolin G, Cogliati M, Cudicio A",
+            "year": "2022",
+            "pmid": "35153831"
+          }
+        ]
+      },
+      "x": 3.422050569967716,
+      "y": 160.56193891183952
+    },
+    {
+      "id": "paper-36316875",
+      "label": "Effects of Kinesio taping on c...",
+      "type": "cause",
+      "size": 22,
+      "importance": 0.7,
+      "color": "#ff9800",
+      "clinicalInfo": {
+        "description": "Fatigue is a common phenomenon encountered by athletes in ordinary life and sports. Fatigue results in decreased muscle strength, balance, agility, and an increased risk of injury, which together resu...",
+        "evidence": "Effects of Kinesio taping on calf muscle fatigue in college female athletes: A randomized controlled trial. (Rana A, Tyagi D, Alghadir AH, 2022)",
+        "references": [
+          {
+            "title": "Effects of Kinesio taping on calf muscle fatigue in college female athletes: A randomized controlled trial.",
+            "authors": "Rana A, Tyagi D, Alghadir AH",
+            "year": "2022",
+            "pmid": "36316875"
+          }
+        ]
+      },
+      "x": 127.30908031413031,
+      "y": -48.61762552999065
+    },
+    {
+      "id": "paper-26727925",
+      "label": "Management of lumbar spinal st...",
+      "type": "cause",
+      "size": 24,
+      "importance": 0.95,
+      "color": "#9c27b0",
+      "clinicalInfo": {
+        "description": "Lumbar spinal stenosis (LSS) affects more than 200,000 adults in the United States, resulting in substantial pain and disability. It is the most common reason for spinal surgery in patients over 65 ye...",
+        "evidence": "Management of lumbar spinal stenosis. (Lurie J, Tomkins-Lane C, 2016)",
+        "references": [
+          {
+            "title": "Management of lumbar spinal stenosis.",
+            "authors": "Lurie J, Tomkins-Lane C",
+            "year": "2016",
+            "pmid": "26727925"
+          }
+        ]
+      },
+      "x": -127.62684605901065,
+      "y": 167.62458915951527
+    },
+    {
+      "id": "paper-33141449",
+      "label": "Phlebotonics for venous insuff...",
+      "type": "evidence",
+      "size": 22,
+      "importance": 0.7,
+      "color": "#607d8b",
+      "clinicalInfo": {
+        "description": "Chronic venous insufficiency (CVI) is a condition in which veins are unable to transport blood unidirectionally towards the heart. CVI usually occurs in the lower limbs. It might result in considerabl...",
+        "evidence": "Phlebotonics for venous insufficiency. (Martinez-Zapata MJ, Vernooij RW, Simancas-Racines D, 2020)",
+        "references": [
+          {
+            "title": "Phlebotonics for venous insufficiency.",
+            "authors": "Martinez-Zapata MJ, Vernooij RW, Simancas-Racines D",
+            "year": "2020",
+            "pmid": "33141449"
+          }
+        ]
+      },
+      "x": 156.3704785707045,
+      "y": -94.51163023211122
+    },
+    {
+      "id": "paper-30758738",
+      "label": "The Seriousness of Chronic Ven...",
+      "type": "evidence",
+      "size": 22,
+      "importance": 0.7,
+      "color": "#607d8b",
+      "clinicalInfo": {
+        "description": "Chronic venous disease (CVD) is a prevalent condition that tends to worsen with age. Patients initially seek treatment to relieve symptoms of leg pain, discomfort, heaviness and swelling, all of which...",
+        "evidence": "The Seriousness of Chronic Venous Disease: A Review of Real-World Evidence. (Davies AH, 2019)",
+        "references": [
+          {
+            "title": "The Seriousness of Chronic Venous Disease: A Review of Real-World Evidence.",
+            "authors": "Davies AH",
+            "year": "2019",
+            "pmid": "30758738"
+          }
+        ]
+      },
+      "x": -154.5538032532719,
+      "y": 163.43479653606096
+    },
+    {
+      "id": "paper-23542774",
+      "label": "Entrapment neuropathies of the...",
+      "type": "cause",
+      "size": 22,
+      "importance": 0.7,
+      "color": "#3f51b5",
+      "clinicalInfo": {
+        "description": "Neuropathies that affect the lower limbs are often encountered after trauma or iatrogenic injury or by entrapment at areas of anatomic restriction. Symptoms may initially be masked by concomitant trau...",
+        "evidence": "Entrapment neuropathies of the lower extremity. (Craig A, 2013)",
+        "references": [
+          {
+            "title": "Entrapment neuropathies of the lower extremity.",
+            "authors": "Craig A",
+            "year": "2013",
+            "pmid": "23542774"
+          }
+        ]
+      },
+      "x": 9.893948363499927,
+      "y": 15.421277455782123
+    },
+    {
+      "id": "paper-30704688",
+      "label": "Entrapment Neuropathies of the...",
+      "type": "cause",
+      "size": 22,
+      "importance": 0.7,
+      "color": "#ff9800",
+      "clinicalInfo": {
+        "description": "Entrapment neuropathies in the lower limbs are a common neurologic problem and may present in any medical setting. Accurate identification and management of these nerve palsies can prevent pain, senso...",
+        "evidence": "Entrapment Neuropathies of the Lower Extremity. (Bowley MP, Doughty CT, 2019)",
+        "references": [
+          {
+            "title": "Entrapment Neuropathies of the Lower Extremity.",
+            "authors": "Bowley MP, Doughty CT",
+            "year": "2019",
+            "pmid": "30704688"
+          }
+        ]
+      },
+      "x": -110.64990011022799,
+      "y": 123.55323918065268
+    },
+    {
+      "id": "paper-26700629",
+      "label": "Peroneal Nerve Palsy: Evaluati...",
+      "type": "cause",
+      "size": 22,
+      "importance": 0.7,
+      "color": "#3f51b5",
+      "clinicalInfo": {
+        "description": "Peroneal nerve palsy is the most common entrapment neuropathy of the lower extremity. Numerous etiologies have been identified; however, compression remains the most common cause. Although injury to t...",
+        "evidence": "Peroneal Nerve Palsy: Evaluation and Management. (Poage C, Roth C, Scott B, 2016)",
+        "references": [
+          {
+            "title": "Peroneal Nerve Palsy: Evaluation and Management.",
+            "authors": "Poage C, Roth C, Scott B",
+            "year": "2016",
+            "pmid": "26700629"
+          }
+        ]
+      },
+      "x": -89.5189206506072,
+      "y": 152.8981445629825
     }
+  ],
+  "edges": [
+    {
+      "id": "edge-1",
+      "source": "muscle-fatigue",
+      "target": "calf-pain",
+      "type": "causes",
+      "weight": 0.85,
+      "label": "근육 피로가 통증을 직접 유발"
+    },
+    {
+      "id": "edge-2",
+      "source": "vascular-insufficiency",
+      "target": "calf-pain",
+      "type": "causes",
+      "weight": 0.75,
+      "label": "혈류 부족이 허혈성 통증 유발"
+    },
+    {
+      "id": "edge-3",
+      "source": "nerve-compression",
+      "target": "calf-pain",
+      "type": "causes",
+      "weight": 0.7,
+      "label": "신경 압박이 방사통 유발"
+    },
+    {
+      "id": "edge-4",
+      "source": "biomechanical-dysfunction",
+      "target": "muscle-fatigue",
+      "type": "causes",
+      "weight": 0.8,
+      "label": "잘못된 움직임 패턴이 근육 피로 증가"
+    },
+    {
+      "id": "edge-5",
+      "source": "overuse-syndrome",
+      "target": "muscle-fatigue",
+      "type": "causes",
+      "weight": 0.75,
+      "label": "과도한 사용이 근육 피로 누적"
+    },
+    {
+      "id": "edge-6",
+      "source": "dehydration",
+      "target": "vascular-insufficiency",
+      "type": "causes",
+      "weight": 0.65,
+      "label": "탈수가 혈액 점도 증가시켜 혈류 저하"
+    },
+    {
+      "id": "edge-7",
+      "source": "prolonged-sitting",
+      "target": "vascular-insufficiency",
+      "type": "causes",
+      "weight": 0.7,
+      "label": "장시간 앉기가 하지 정맥 순환 저하"
+    },
+    {
+      "id": "edge-8",
+      "source": "poor-footwear",
+      "target": "biomechanical-dysfunction",
+      "type": "causes",
+      "weight": 0.6,
+      "label": "부적절한 신발이 족부 정렬 이상 유발"
+    },
+    {
+      "id": "edge-9",
+      "source": "prolonged-sitting",
+      "target": "nerve-compression",
+      "type": "causes",
+      "weight": 0.55,
+      "label": "장시간 앉기가 요추 신경근 압박"
+    },
+    {
+      "id": "edge-10",
+      "source": "gastrocnemius-overactivity",
+      "target": "muscle-fatigue",
+      "type": "causes",
+      "weight": 0.8,
+      "label": "비복근 과활성이 근육 피로 유발"
+    },
+    {
+      "id": "edge-11",
+      "source": "soleus-weakness",
+      "target": "muscle-fatigue",
+      "type": "causes",
+      "weight": 0.75,
+      "label": "가자미근 약화로 비복근 과부하"
+    },
+    {
+      "id": "edge-12",
+      "source": "atp-depletion",
+      "target": "muscle-fatigue",
+      "type": "causes",
+      "weight": 0.9,
+      "label": "ATP 고갈이 근육 수축력 저하"
+    },
+    {
+      "id": "edge-13",
+      "source": "lactate-accumulation",
+      "target": "muscle-fatigue",
+      "type": "causes",
+      "weight": 0.7,
+      "label": "젖산 축적이 근육 피로 증가"
+    },
+    {
+      "id": "edge-14",
+      "source": "mitochondrial-dysfunction",
+      "target": "atp-depletion",
+      "type": "causes",
+      "weight": 0.85,
+      "label": "미토콘드리아 기능부전이 ATP 생산 감소"
+    },
+    {
+      "id": "edge-15",
+      "source": "training-load-spike",
+      "target": "overuse-syndrome",
+      "type": "causes",
+      "weight": 0.85,
+      "label": "급격한 훈련량 증가가 과사용 유발"
+    },
+    {
+      "id": "edge-16",
+      "source": "insufficient-recovery",
+      "target": "overuse-syndrome",
+      "type": "causes",
+      "weight": 0.8,
+      "label": "회복 부족이 누적 손상 유발"
+    },
+    {
+      "id": "edge-17",
+      "source": "repetitive-movement",
+      "target": "overuse-syndrome",
+      "type": "causes",
+      "weight": 0.75,
+      "label": "반복 동작이 미세 외상 누적"
+    },
+    {
+      "id": "edge-18",
+      "source": "limited-ankle-dorsiflexion",
+      "target": "biomechanical-dysfunction",
+      "type": "causes",
+      "weight": 0.85,
+      "label": "발목 가동성 제한이 보상 패턴 유발"
+    },
+    {
+      "id": "edge-19",
+      "source": "ankle-instability",
+      "target": "biomechanical-dysfunction",
+      "type": "causes",
+      "weight": 0.8,
+      "label": "발목 불안정성이 움직임 패턴 변화"
+    },
+    {
+      "id": "edge-20",
+      "source": "lower-limb-malalignment",
+      "target": "biomechanical-dysfunction",
+      "type": "causes",
+      "weight": 0.75,
+      "label": "하지 정렬 이상이 부하 분산 불균형"
+    },
+    {
+      "id": "edge-21",
+      "source": "gait-abnormality",
+      "target": "biomechanical-dysfunction",
+      "type": "causes",
+      "weight": 0.7,
+      "label": "보행 이상이 대상 패턴 유발"
+    },
+    {
+      "id": "edge-22",
+      "source": "hip-weakness",
+      "target": "biomechanical-dysfunction",
+      "type": "causes",
+      "weight": 0.8,
+      "label": "고관절 약화가 원위부 과부하"
+    },
+    {
+      "id": "edge-23",
+      "source": "limited-ankle-dorsiflexion",
+      "target": "gastrocnemius-overactivity",
+      "type": "causes",
+      "weight": 0.7,
+      "label": "발목 제한이 비복근 대상 활성 유발"
+    },
+    {
+      "id": "edge-24",
+      "source": "ankle-instability",
+      "target": "soleus-weakness",
+      "type": "causes",
+      "weight": 0.75,
+      "label": "발목 불안정이 가자미근 억제"
+    },
+    {
+      "id": "edge-25",
+      "source": "poor-footwear",
+      "target": "limited-ankle-dorsiflexion",
+      "type": "causes",
+      "weight": 0.65,
+      "label": "부적절한 신발이 발목 가동성 제한"
+    },
+    {
+      "id": "edge-26",
+      "source": "hip-weakness",
+      "target": "gait-abnormality",
+      "type": "causes",
+      "weight": 0.75,
+      "label": "고관절 약화가 보행 패턴 변화"
+    },
+    {
+      "id": "edge-27",
+      "source": "prolonged-sitting",
+      "target": "hip-weakness",
+      "type": "causes",
+      "weight": 0.7,
+      "label": "장시간 앉기가 둔근 약화"
+    },
+    {
+      "id": "edge-28",
+      "source": "gastrocnemius-overactivity",
+      "target": "soleus-inhibition",
+      "type": "causes",
+      "weight": 0.85,
+      "label": "비복근 과활성이 가자미근 억제 유발 (상호억제)"
+    },
+    {
+      "id": "edge-29",
+      "source": "soleus-inhibition",
+      "target": "calf-pain",
+      "type": "causes",
+      "weight": 0.75,
+      "label": "가자미근 약화가 비복근 과부하를 통해 통증 유발"
+    },
+    {
+      "id": "edge-30",
+      "source": "ankle-instability",
+      "target": "fibularis-weakness",
+      "type": "causes",
+      "weight": 0.8,
+      "label": "발목 불안정이 비골근 약화 유발"
+    },
+    {
+      "id": "edge-31",
+      "source": "fibularis-weakness",
+      "target": "ankle-instability",
+      "type": "causes",
+      "weight": 0.85,
+      "label": "비골근 약화가 발목 불안정 악화 (악순환)"
+    },
+    {
+      "id": "edge-32",
+      "source": "tibialis-anterior-dysfunction",
+      "target": "gastrocnemius-overactivity",
+      "type": "related",
+      "weight": 0.7,
+      "label": "전경골근-비복근 길항근 불균형"
+    },
+    {
+      "id": "edge-33",
+      "source": "hip-weakness",
+      "target": "gluteus-medius-weakness",
+      "type": "includes",
+      "weight": 0.9,
+      "label": "고관절 약화는 중둔근 약화를 포함"
+    },
+    {
+      "id": "edge-34",
+      "source": "hip-weakness",
+      "target": "gluteus-maximus-inhibition",
+      "type": "includes",
+      "weight": 0.85,
+      "label": "고관절 약화는 대둔근 억제를 포함"
+    },
+    {
+      "id": "edge-35",
+      "source": "gluteus-maximus-inhibition",
+      "target": "hamstring-dominance",
+      "type": "causes",
+      "weight": 0.88,
+      "label": "대둔근 억제가 슬건 우세 보상 패턴 유발"
+    },
+    {
+      "id": "edge-36",
+      "source": "prolonged-sitting",
+      "target": "gluteus-maximus-inhibition",
+      "type": "causes",
+      "weight": 0.82,
+      "label": "장시간 앉기가 대둔근 억제 유발"
+    },
+    {
+      "id": "edge-37",
+      "source": "gluteus-medius-weakness",
+      "target": "gait-abnormality",
+      "type": "causes",
+      "weight": 0.78,
+      "label": "중둔근 약화가 보행 이상 유발 (골반 낙하)"
+    },
+    {
+      "id": "edge-38",
+      "source": "hamstring-dominance",
+      "target": "calf-pain",
+      "type": "causes",
+      "weight": 0.65,
+      "label": "슬건 우세 패턴이 하지 운동사슬 전체에 영향"
+    },
+    {
+      "id": "edge-39",
+      "source": "paper-24287245",
+      "target": "calf-pain",
+      "type": "evidence",
+      "weight": 0.7,
+      "label": "Evidence: 2014"
+    },
+    {
+      "id": "edge-40",
+      "source": "paper-20473123",
+      "target": "calf-pain",
+      "type": "evidence",
+      "weight": 0.7,
+      "label": "Evidence: 2010"
+    },
+    {
+      "id": "edge-41",
+      "source": "paper-31618073",
+      "target": "calf-pain",
+      "type": "evidence",
+      "weight": 0.7,
+      "label": "Evidence: 2019"
+    },
+    {
+      "id": "edge-42",
+      "source": "paper-22963024",
+      "target": "calf-pain",
+      "type": "evidence",
+      "weight": 0.7,
+      "label": "Evidence: 2012"
+    },
+    {
+      "id": "edge-43",
+      "source": "paper-35153831",
+      "target": "calf-pain",
+      "type": "evidence",
+      "weight": 0.7,
+      "label": "Evidence: 2022"
+    },
+    {
+      "id": "edge-44",
+      "source": "paper-36316875",
+      "target": "calf-pain",
+      "type": "evidence",
+      "weight": 0.7,
+      "label": "Evidence: 2022"
+    },
+    {
+      "id": "edge-45",
+      "source": "paper-26727925",
+      "target": "calf-pain",
+      "type": "evidence",
+      "weight": 0.95,
+      "label": "Evidence: 2016"
+    },
+    {
+      "id": "edge-46",
+      "source": "paper-33141449",
+      "target": "calf-pain",
+      "type": "evidence",
+      "weight": 0.7,
+      "label": "Evidence: 2020"
+    },
+    {
+      "id": "edge-47",
+      "source": "paper-30758738",
+      "target": "calf-pain",
+      "type": "evidence",
+      "weight": 0.7,
+      "label": "Evidence: 2019"
+    },
+    {
+      "id": "edge-48",
+      "source": "paper-23542774",
+      "target": "calf-pain",
+      "type": "evidence",
+      "weight": 0.7,
+      "label": "Evidence: 2013"
+    },
+    {
+      "id": "edge-49",
+      "source": "paper-30704688",
+      "target": "calf-pain",
+      "type": "evidence",
+      "weight": 0.7,
+      "label": "Evidence: 2019"
+    },
+    {
+      "id": "edge-50",
+      "source": "paper-26700629",
+      "target": "calf-pain",
+      "type": "evidence",
+      "weight": 0.7,
+      "label": "Evidence: 2016"
+    }
+  ]
+}
