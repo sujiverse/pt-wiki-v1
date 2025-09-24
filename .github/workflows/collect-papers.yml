@@ -1,0 +1,43 @@
+name: Collect Papers
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+
+      - name: Run paper collector
+        run: |
+          cd scripts
+          python paper_collector.py
+
+      - name: Check for changes
+        id: git-check
+        run: |
+          git diff --exit-code docs/graph.json || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push if changed
+        if: steps.git-check.outputs.changed == 'true'
+        run: |
+          git config --local user.email "bot@ptcompensation.wiki"
+          git config --local user.name "Paper Collection Bot"
+          git add docs/graph.json
+          git commit -m "🤖 Auto-update: Added new papers from PubMed"
+          git push
