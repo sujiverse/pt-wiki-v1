@@ -1211,28 +1211,6 @@
       "y": 163.43479653606096
     },
     {
-      "id": "paper-23542774",
-      "label": "Entrapment neuropathies of the...",
-      "type": "cause",
-      "size": 22,
-      "importance": 0.7,
-      "color": "#3f51b5",
-      "clinicalInfo": {
-        "description": "Neuropathies that affect the lower limbs are often encountered after trauma or iatrogenic injury or by entrapment at areas of anatomic restriction. Symptoms may initially be masked by concomitant trau...",
-        "evidence": "Entrapment neuropathies of the lower extremity. (Craig A, 2013)",
-        "references": [
-          {
-            "title": "Entrapment neuropathies of the lower extremity.",
-            "authors": "Craig A",
-            "year": "2013",
-            "pmid": "23542774"
-          }
-        ]
-      },
-      "x": 9.893948363499927,
-      "y": 15.421277455782123
-    },
-    {
       "id": "paper-30704688",
       "label": "Entrapment Neuropathies of the...",
       "type": "cause",
@@ -1275,6 +1253,182 @@
       },
       "x": -89.5189206506072,
       "y": 152.8981445629825
+    },
+    {
+      "id": "paper-32577737",
+      "label": "Four-week ankle-rehabilitation programs ...",
+      "type": "evidence",
+      "size": 22,
+      "importance": 0.7,
+      "color": "#607d8b",
+      "clinicalInfo": {
+        "description": "Researchers have shown that rehabilitation programs incorporating resistance-band and balance-board exercises are effective for improving clinical measures of function and patient-reported outcomes in...",
+        "evidence": "Four-Week Ankle-Rehabilitation Programs in Adolescent Athletes With Chronic Ankle Instability. (Cain MS, Ban RJ, Chen YP, 2020)",
+        "references": [
+          {
+            "title": "Four-Week Ankle-Rehabilitation Programs in Adolescent Athletes With Chronic Ankle Instability.",
+            "authors": "Cain MS, Ban RJ, Chen YP",
+            "year": "2020",
+            "pmid": "32577737"
+          }
+        ]
+      },
+      "x": 15.041715701362213,
+      "y": 49.921234746790866
+    },
+    {
+      "id": "paper-37137624",
+      "label": "Ankle sprain and chronic lateral ankle i...",
+      "type": "cause",
+      "size": 22,
+      "importance": 0.7,
+      "color": "#ff9800",
+      "clinicalInfo": {
+        "description": "The management protocol for each case of ankle sprain should be individualized and optimized in order to reduce the likelihood of development of chronic instability. Initial treatment aims to address ...",
+        "evidence": "Ankle Sprain and Chronic Lateral Ankle Instability: Optimizing Conservative Treatment. (Dhillon MS, Patel S, Baburaj V, 2023)",
+        "references": [
+          {
+            "title": "Ankle Sprain and Chronic Lateral Ankle Instability: Optimizing Conservative Treatment.",
+            "authors": "Dhillon MS, Patel S, Baburaj V",
+            "year": "2023",
+            "pmid": "37137624"
+          }
+        ]
+      },
+      "x": 146.4656788061986,
+      "y": 72.18933343630907
+    },
+    {
+      "id": "paper-26717498",
+      "label": "Sensory-targeted ankle rehabilitation st...",
+      "type": "evidence",
+      "size": 23,
+      "importance": 0.85,
+      "color": "#607d8b",
+      "clinicalInfo": {
+        "description": "Deficient sensory input from damaged ankle ligament receptors is thought to contribute to sensorimotor deficits in those with chronic ankle instability (CAI). Targeting other viable sensory receptors ...",
+        "evidence": "Sensory-Targeted Ankle Rehabilitation Strategies for Chronic Ankle Instability. (McKeon PO, Wikstrom EA, 2016)",
+        "references": [
+          {
+            "title": "Sensory-Targeted Ankle Rehabilitation Strategies for Chronic Ankle Instability.",
+            "authors": "McKeon PO, Wikstrom EA",
+            "year": "2016",
+            "pmid": "26717498"
+          }
+        ]
+      },
+      "x": 113.99896552515654,
+      "y": 124.5733414610699
+    },
+    {
+      "id": "paper-31278997",
+      "label": "Oarsi guidelines for the non-surgical 치료...",
+      "type": "evidence",
+      "size": 22,
+      "importance": 0.7,
+      "color": "#607d8b",
+      "clinicalInfo": {
+        "description": "To update and expand upon prior Osteoarthritis Research Society International (OARSI) guidelines by developing patient-focused treatment recommendations for individuals with Knee, Hip, and Polyarticul...",
+        "evidence": "OARSI guidelines for the non-surgical management of knee, hip, and polyarticular osteoarthritis. (Bannuru RR, Osani MC, Vaysbrot EE, 2019)",
+        "references": [
+          {
+            "title": "OARSI guidelines for the non-surgical management of knee, hip, and polyarticular osteoarthritis.",
+            "authors": "Bannuru RR, Osani MC, Vaysbrot EE",
+            "year": "2019",
+            "pmid": "31278997"
+          }
+        ]
+      },
+      "x": 117.49256296326584,
+      "y": -133.69545043951874
+    },
+    {
+      "id": "paper-38258673",
+      "label": "고관절-focused physical therapy versus spin...",
+      "type": "cause",
+      "size": 22,
+      "importance": 0.7,
+      "color": "#ff9800",
+      "clinicalInfo": {
+        "description": "Previously, we identified a population of older adults with chronic low back pain, hip pain, and hip muscle weakness who had worse 12-month low back pain and functional outcomes than age-matched adult...",
+        "evidence": "Hip-focused physical therapy versus spine-focused physical therapy for older adults with chronic low back pain at risk for mobility decline (MASH): a multicentre, single-masked, randomised controlled trial. (Hicks GE, George SZ, Pugliese JM, 2024)",
+        "references": [
+          {
+            "title": "Hip-focused physical therapy versus spine-focused physical therapy for older adults with chronic low back pain at risk for mobility decline (MASH): a multicentre, single-masked, randomised controlled trial.",
+            "authors": "Hicks GE, George SZ, Pugliese JM",
+            "year": "2024",
+            "pmid": "38258673"
+          }
+        ]
+      },
+      "x": -91.64518236563572,
+      "y": -30.8788127250724
+    },
+    {
+      "id": "paper-34751784",
+      "label": "The manual therapy and strengthening for...",
+      "type": "cause",
+      "size": 22,
+      "importance": 0.7,
+      "color": "#ff9800",
+      "clinicalInfo": {
+        "description": "Chronic low back pain (CLBP) is a disabling and costly condition for older adults that is difficult to properly classify and treat. In a cohort study, a subgroup of older adults with CLBP who had elev...",
+        "evidence": "The Manual Therapy and Strengthening for the Hip (MASH) Trial: Protocol for a Multisite Randomized Trial of a Subgroup of Older Adults With Chronic Back and Hip Pain. (Pugliese JM, Coyle PC, Knox PJ, 2022)",
+        "references": [
+          {
+            "title": "The Manual Therapy and Strengthening for the Hip (MASH) Trial: Protocol for a Multisite Randomized Trial of a Subgroup of Older Adults With Chronic Back and Hip Pain.",
+            "authors": "Pugliese JM, Coyle PC, Knox PJ",
+            "year": "2022",
+            "pmid": "34751784"
+          }
+        ]
+      },
+      "x": 156.21159875552993,
+      "y": 146.01090345532833
+    },
+    {
+      "id": "paper-21916393",
+      "label": "Diagnosis and treatment of plantar fasci...",
+      "type": "evidence",
+      "size": 22,
+      "importance": 0.7,
+      "color": "#607d8b",
+      "clinicalInfo": {
+        "description": "Plantar fasciitis, a self-limiting condition, is a common cause of heel pain in adults. It affects more than 1 million persons per year, and two-thirds of patients with plantar fasciitis will seek car...",
+        "evidence": "Diagnosis and treatment of plantar fasciitis. (Goff JD, Crawford R, 2011)",
+        "references": [
+          {
+            "title": "Diagnosis and treatment of plantar fasciitis.",
+            "authors": "Goff JD, Crawford R",
+            "year": "2011",
+            "pmid": "21916393"
+          }
+        ]
+      },
+      "x": -140.99159730287658,
+      "y": 61.39558302292589
+    },
+    {
+      "id": "paper-18524985",
+      "label": "Plantar fasciitis: 평가 and treatment....",
+      "type": "evidence",
+      "size": 22,
+      "importance": 0.7,
+      "color": "#607d8b",
+      "clinicalInfo": {
+        "description": "Plantar fasciitis is the most common cause of plantar heel pain. Its characteristic features are pain and tenderness, predominately on the medial aspect of the calcaneus near the sole of the heel. Con...",
+        "evidence": "Plantar fasciitis: evaluation and treatment. (Neufeld SK, Cerrato R, 2008)",
+        "references": [
+          {
+            "title": "Plantar fasciitis: evaluation and treatment.",
+            "authors": "Neufeld SK, Cerrato R",
+            "year": "2008",
+            "pmid": "18524985"
+          }
+        ]
+      },
+      "x": 112.50582966823774,
+      "y": -69.83345514870737
     }
   ],
   "edges": [
@@ -1655,14 +1809,6 @@
       "label": "Evidence: 2019"
     },
     {
-      "id": "edge-48",
-      "source": "paper-23542774",
-      "target": "calf-pain",
-      "type": "evidence",
-      "weight": 0.7,
-      "label": "Evidence: 2013"
-    },
-    {
       "id": "edge-49",
       "source": "paper-30704688",
       "target": "calf-pain",
@@ -1677,6 +1823,70 @@
       "type": "evidence",
       "weight": 0.7,
       "label": "Evidence: 2016"
+    },
+    {
+      "id": "edge-50",
+      "source": "paper-32577737",
+      "target": "training-load-spike",
+      "type": "evidence",
+      "weight": 0.7,
+      "label": "논문 증거 (2020)"
+    },
+    {
+      "id": "edge-51",
+      "source": "paper-37137624",
+      "target": "soleus-weakness",
+      "type": "evidence",
+      "weight": 0.7,
+      "label": "논문 증거 (2023)"
+    },
+    {
+      "id": "edge-52",
+      "source": "paper-26717498",
+      "target": "calf-pain",
+      "type": "evidence",
+      "weight": 0.85,
+      "label": "논문 증거 (2016)"
+    },
+    {
+      "id": "edge-53",
+      "source": "paper-31278997",
+      "target": "calf-pain",
+      "type": "evidence",
+      "weight": 0.7,
+      "label": "논문 증거 (2019)"
+    },
+    {
+      "id": "edge-54",
+      "source": "paper-38258673",
+      "target": "soleus-weakness",
+      "type": "evidence",
+      "weight": 0.7,
+      "label": "논문 증거 (2024)"
+    },
+    {
+      "id": "edge-55",
+      "source": "paper-34751784",
+      "target": "soleus-weakness",
+      "type": "evidence",
+      "weight": 0.7,
+      "label": "논문 증거 (2022)"
+    },
+    {
+      "id": "edge-56",
+      "source": "paper-21916393",
+      "target": "calf-pain",
+      "type": "evidence",
+      "weight": 0.7,
+      "label": "논문 증거 (2011)"
+    },
+    {
+      "id": "edge-57",
+      "source": "paper-18524985",
+      "target": "calf-pain",
+      "type": "evidence",
+      "weight": 0.7,
+      "label": "논문 증거 (2008)"
     }
   ]
 }
